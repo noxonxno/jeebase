@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/fj")
 public class FjTaskController {
 
     @Autowired

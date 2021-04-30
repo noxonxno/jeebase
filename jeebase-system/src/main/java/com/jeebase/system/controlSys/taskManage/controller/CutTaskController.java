@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/cut")
 public class CutTaskController {
 
     @Autowired

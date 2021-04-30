@@ -18,6 +18,17 @@ public class MesPlanEntity implements Serializable {
     @TableField("steel_code")
     private String steelCode;
 
+    @TableField("plan_code")
+    private String planCode;
+
+    public void setPlanCode(String planCode) {
+        this.planCode = planCode;
+    }
+
+    public String getPlanCode() {
+        return planCode;
+    }
+
     @TableField("mes_advice_id")
     private String mesAdviceId;
 

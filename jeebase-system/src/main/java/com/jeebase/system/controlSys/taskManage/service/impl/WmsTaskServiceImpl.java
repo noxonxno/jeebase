@@ -9,7 +9,9 @@ import com.jeebase.system.controlSys.taskManage.entity.WmsTaskEntity;
 import com.jeebase.system.controlSys.taskManage.mapper.IWmsTaskMapper;
 import com.jeebase.system.controlSys.taskManage.service.IWmsTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class WmsTaskServiceImpl extends ServiceImpl<IWmsTaskMapper, WmsTaskEntity> implements IWmsTaskService {
 
     @Autowired

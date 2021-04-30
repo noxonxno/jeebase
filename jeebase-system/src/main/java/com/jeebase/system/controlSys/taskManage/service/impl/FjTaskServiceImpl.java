@@ -9,7 +9,9 @@ import com.jeebase.system.controlSys.taskManage.entity.FjTaskEntity;
 import com.jeebase.system.controlSys.taskManage.mapper.IFjTaskMapper;
 import com.jeebase.system.controlSys.taskManage.service.IFjTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class FjTaskServiceImpl extends ServiceImpl<IFjTaskMapper, FjTaskEntity> implements IFjTaskService {
 
     @Autowired

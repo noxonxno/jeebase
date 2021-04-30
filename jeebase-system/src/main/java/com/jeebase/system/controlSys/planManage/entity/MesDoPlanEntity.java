@@ -18,6 +18,9 @@ public class MesDoPlanEntity implements Serializable {
     @TableField("steel_code")
     private String steelCode;
 
+    @TableField("plan_code")
+    private String planCode;
+
     @TableField("task_type")
     private String taskType;
 
@@ -162,5 +165,14 @@ public class MesDoPlanEntity implements Serializable {
 
     public String getPlanSlabSource() {
         return planSlabSource;
+    }
+
+
+    public void setPlanCode(String planCode) {
+        this.planCode = planCode;
+    }
+
+    public String getPlanCode() {
+        return planCode;
     }
 }
