@@ -1,5 +1,6 @@
-package com.dayan.business.utils;
+package com.jeebase.system.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
@@ -15,6 +16,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -127,7 +129,7 @@ public class HttpUtils {
         return null;
     }
 
-    public static String doPost(String url, String param) {
+    public static String doPost(String url, String param) throws UnsupportedEncodingException {
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
         // 创建httpPost

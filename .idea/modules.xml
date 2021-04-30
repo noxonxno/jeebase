@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/jeebase.iml" filepath="$PROJECT_DIR$/jeebase.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jeebase-common/jeebase-common.iml" filepath="$PROJECT_DIR$/jeebase-common/jeebase-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jeebase-system/jeebase-system.iml" filepath="$PROJECT_DIR$/jeebase-system/jeebase-system.iml" />
+    </modules>
+  </component>
+</project>

@@ -3,6 +3,8 @@ package com.jeebase.system.common.component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.jeebase.system.security.entity.User;
+import com.jeebase.system.utils.GetUserUtils;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Component;
@@ -21,33 +23,46 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
+
+        User user = GetUserUtils.getUser();
+
         Object creator = getFieldValByName("creator", metaObject);
-        if (null == creator && null != SecurityUtils.getSubject()) {
-            String principal = (String) SecurityUtils.getSubject().getPrincipal();
-            if (!StringUtils.isEmpty(principal)) {
-                JSONObject userObj = JSON.parseObject(principal);
-                setFieldValByName("creator", userObj.getInteger("id"), metaObject);
-            }
+        if (null == creator && null != user) {
+            setFieldValByName("creator", user.getId(), metaObject);
         }
         Object createTime = getFieldValByName("createTime", metaObject);
         if (null == createTime) {
             setFieldValByName("createTime", LocalDateTime.now(), metaObject);
         }
+
+
+
+        if(metaObject.hasSetter("locationUser")){
+            setFieldValByName("locationUser", user.getUserName(), metaObject);
+        }
+        if(metaObject.hasSetter("createUser")){
+            setFieldValByName("createUser", user.getUserName(), metaObject);
+        }
+
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        Object operator = getFieldValByName("operator", metaObject);
-        if (null == operator && null != SecurityUtils.getSubject()) {
-            String principal = (String) SecurityUtils.getSubject().getPrincipal();
-            if (!StringUtils.isEmpty(principal)) {
-                JSONObject userObj = JSON.parseObject(principal);
-                setFieldValByName("operator", userObj.getInteger("id"), metaObject);
-            }
+        User user = GetUserUtils.getUser();
+
+        Object creator = getFieldValByName("creator", metaObject);
+        if (null == creator && null != user) {
+            setFieldValByName("creator", user.getId(), metaObject);
         }
         Object updateTime = getFieldValByName("updateTime", metaObject);
         if (null == updateTime) {
             setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
+        }
+
+
+        /*自己需要新增的建议用一下判断方式*/
+        if(metaObject.hasSetter("updateUser")){
+            setFieldValByName("updateUser", user.getUserName(), metaObject);
         }
     }
 }

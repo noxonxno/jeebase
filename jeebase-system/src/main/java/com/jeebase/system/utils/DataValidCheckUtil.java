@@ -1,9 +1,12 @@
-package com.dayan.business.utils;
+package com.jeebase.system.utils;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+/**
+ * @author DELL
+ */
 public class DataValidCheckUtil {
 
 	/** 手机号码校验规则 */

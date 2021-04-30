@@ -1,7 +1,6 @@
-/**
+package com.jeebase.system.utils; /**
  * Copyright &copy; 2012-2016 <a href="https://github.com/thinkgem/jeesite">JeeSite</a> All rights reserved.
  */
-package com.dayan.business.utils;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 

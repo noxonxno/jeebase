@@ -13,12 +13,11 @@ import org.springframework.context.annotation.ComponentScan;
  * @date 2018年5月18日 下午4:01:44
  */
 @SpringBootApplication
-@MapperScan({"com.jeebase.*.*.mapper","com.jeebase.system.controlSys.*.mapper"})
+@MapperScan({"com.jeebase.*.*.mapper","com.jeebase.system.controlSys.*.*.mapper"})
 @ComponentScan(basePackages = "com.jeebase.*.*.service")
 @ComponentScan(basePackages = "com.jeebase.*.*.aspect")
 @ComponentScan(basePackages = "com.jeebase.*.*.component")
 @ComponentScan(basePackages = "com.jeebase.*.*.controller")
-
 @EnableCaching
 public class SpringbootApplication {
 

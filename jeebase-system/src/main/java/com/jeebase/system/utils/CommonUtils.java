@@ -1,4 +1,4 @@
-package com.dayan.business.utils;
+package com.jeebase.system.utils;
 
 import java.math.BigInteger;
 import java.security.InvalidParameterException;

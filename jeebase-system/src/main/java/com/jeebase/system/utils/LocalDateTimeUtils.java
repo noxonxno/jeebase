@@ -1,4 +1,4 @@
-package com.dayan.business.utils;
+package com.jeebase.system.utils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
