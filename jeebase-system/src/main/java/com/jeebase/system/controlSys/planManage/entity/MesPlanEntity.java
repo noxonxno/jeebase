@@ -21,14 +21,6 @@ public class MesPlanEntity implements Serializable {
     @TableField("plan_code")
     private String planCode;
 
-    public void setPlanCode(String planCode) {
-        this.planCode = planCode;
-    }
-
-    public String getPlanCode() {
-        return planCode;
-    }
-
     @TableField("mes_advice_id")
     private String mesAdviceId;
 
@@ -44,6 +36,9 @@ public class MesPlanEntity implements Serializable {
     @TableField("is_check")
     private String isCheck;
 
+    @TableField("sort")
+    private int sort;
+
     @TableField("create_time")
     private String createTime;
 
@@ -55,6 +50,9 @@ public class MesPlanEntity implements Serializable {
 
     @TableField("tary_id")
     private String taryId;
+
+    @TableField("plan_state")
+    private String planState;
 
     @TableField("err_code")
     private String errCode;
@@ -165,6 +163,14 @@ public class MesPlanEntity implements Serializable {
 
     public String getPlanSlabSource() {
         return planSlabSource;
+    }
+
+    public void setPlanCode(String planCode) {
+        this.planCode = planCode;
+    }
+
+    public String getPlanCode() {
+        return planCode;
     }
 
 }

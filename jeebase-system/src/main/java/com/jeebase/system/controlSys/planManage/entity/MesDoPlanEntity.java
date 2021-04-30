@@ -15,9 +15,6 @@ public class MesDoPlanEntity implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    @TableField("steel_code")
-    private String steelCode;
-
     @TableField("plan_code")
     private String planCode;
 
@@ -42,8 +39,6 @@ public class MesDoPlanEntity implements Serializable {
     @TableField("cut_url")
     private String cutUrl;
 
-    @TableField("is_check")
-    private String isCheck;
 
     @TableField("create_time")
     private String createTime;
@@ -51,17 +46,11 @@ public class MesDoPlanEntity implements Serializable {
     @TableField("update_time")
     private String updateTime;
 
-    @TableField("emp_re_id")
-    private String empId;
 
     @TableField("tary_id")
     private String taryId;
 
-    @TableField("err_code")
-    private String errCode;
 
-    @TableField("plan_slab_source")
-    private String planSlabSource;
 
     public String getMesAdviceId() {
         return mesAdviceId;
@@ -69,10 +58,6 @@ public class MesDoPlanEntity implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public void setSteelCode(String steelCode) {
-        this.steelCode = steelCode;
     }
 
     public void setSteelType(String steelType) {
@@ -87,10 +72,6 @@ public class MesDoPlanEntity implements Serializable {
         this.cutUrl = cutUrl;
     }
 
-    public void setIsCheck(String isCheck) {
-        this.isCheck = isCheck;
-    }
-
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
@@ -99,20 +80,8 @@ public class MesDoPlanEntity implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public void setEmpId(String empId) {
-        this.empId = empId;
-    }
-
     public void setTaryId(String taryId) {
         this.taryId = taryId;
-    }
-
-    public void setErrCode(String errCode) {
-        this.errCode = errCode;
-    }
-
-    public void setPlanSlabSource(String planSlabSource) {
-        this.planSlabSource = planSlabSource;
     }
 
     public void setMesAdviceId(String mesAdviceId) {
@@ -121,10 +90,6 @@ public class MesDoPlanEntity implements Serializable {
 
     public Integer getId() {
         return id;
-    }
-
-    public String getSteelCode() {
-        return steelCode;
     }
 
     public String getSteelType() {
@@ -139,10 +104,6 @@ public class MesDoPlanEntity implements Serializable {
         return cutUrl;
     }
 
-    public String getIsCheck() {
-        return isCheck;
-    }
-
     public String getCreateTime() {
         return createTime;
     }
@@ -151,22 +112,9 @@ public class MesDoPlanEntity implements Serializable {
         return updateTime;
     }
 
-    public String getEmpId() {
-        return empId;
-    }
-
     public String getTaryId() {
         return taryId;
     }
-
-    public String getErrCode() {
-        return errCode;
-    }
-
-    public String getPlanSlabSource() {
-        return planSlabSource;
-    }
-
 
     public void setPlanCode(String planCode) {
         this.planCode = planCode;
