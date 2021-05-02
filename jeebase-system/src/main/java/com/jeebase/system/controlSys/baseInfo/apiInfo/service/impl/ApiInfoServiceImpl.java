@@ -90,13 +90,18 @@ public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfoEntitl
 
     @Override
     public String testApiInfo(ApiInfoEntitly apiInfoEntitly) throws Exception {
-        String url = apiInfoEntitly.getApiIp()+apiInfoEntitly.getApiUrl();
-        String res =  HttpUtils.doPost(url,JsonUtils.toJSONObject(apiInfoEntitly.getApiParam()));
+        String url = apiInfoEntitly.getApiIp() + apiInfoEntitly.getApiUrl();
+        String param = apiInfoEntitly.getApiParam();
+        /*防止测试调用接口时 参数为空的情况 设置默认参数*/
+        if (param == "" || "".equals(param) || param == null) {
+            param = "{param:1}";
+        }
+        String res = HttpUtils.doPost(url, JsonUtils.toJSONObject(param));
 
         //System.err.println(res);
         JSONObject json = JsonUtils.toJSONObject(res);
         String code = json.get("code").toString();
-        if(code.equals("200")){
+        if (code.equals("200")) {
             return "接口调用成功~";
         }
         return json.get("msg").toString();
