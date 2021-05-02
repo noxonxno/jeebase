@@ -1,4 +1,4 @@
-package com.dayan.business.utils;
+package com.jeebase.system.utils;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
