@@ -30,11 +30,42 @@ public class MesPlanEntity implements Serializable {
     @TableField("dxf_url")
     private String dxfUrl;
 
+    @TableField("dxf_model")
+    private String dxfModel;
+
+    @TableField("dxf_code")
+    private String dxfCode;
+
+    @TableField("dxf_json")
+    private String dxfJson;
+
+    @TableField("sfj_time")
+    private String sfjTime;
+
+    @TableField("bfj_time")
+    private String bfjTime;
+
+    @TableField("print_time")
+    private String printTime;
+
+    @TableField("cut_code")
+    private String cutCode;
+
+    @TableField("cut_model")
+    private String cutModel;
+
+    @TableField("cut_time")
+    private String cutTime;
+
+    @TableField("cut_check")
+    private String cutCheck;
+
+    @TableField("fj_check")
+    private String fjCheck;
+
     @TableField("cut_url")
     private String cutUrl;
 
-    @TableField("is_check")
-    private String isCheck;
 
     @TableField("sort")
     private int sort;
@@ -45,11 +76,11 @@ public class MesPlanEntity implements Serializable {
     @TableField("update_time")
     private String updateTime;
 
-    @TableField("emp_re_id")
-    private String empId;
+    @TableField("user_id")
+    private String userId;
 
-    @TableField("tary_id")
-    private String taryId;
+//    @TableField("tary_id")
+//    private String taryId;
 
     @TableField("plan_state")
     private String planState;
@@ -60,6 +91,117 @@ public class MesPlanEntity implements Serializable {
     @TableField("plan_slab_source")
     private String planSlabSource;
 
+    public void setDxfModel(String dxfModel) {
+        this.dxfModel = dxfModel;
+    }
+
+    public void setDxfCode(String dxfCode) {
+        this.dxfCode = dxfCode;
+    }
+
+    public void setDxfJson(String dxfJson) {
+        this.dxfJson = dxfJson;
+    }
+
+    public void setSfjTime(String sfjTime) {
+        this.sfjTime = sfjTime;
+    }
+
+    public void setBfjTime(String bfjTime) {
+        this.bfjTime = bfjTime;
+    }
+
+    public void setPrintTime(String printTime) {
+        this.printTime = printTime;
+    }
+
+    public void setCutCode(String cutCode) {
+        this.cutCode = cutCode;
+    }
+
+    public void setCutModel(String cutModel) {
+        this.cutModel = cutModel;
+    }
+
+    public void setCutTime(String cutTime) {
+        this.cutTime = cutTime;
+    }
+
+    public void setCutCheck(String cutCheck) {
+        this.cutCheck = cutCheck;
+    }
+
+    public void setFjCheck(String fjCheck) {
+        this.fjCheck = fjCheck;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setPlanState(String planState) {
+        this.planState = planState;
+    }
+
+    public String getDxfModel() {
+        return dxfModel;
+    }
+
+    public String getDxfCode() {
+        return dxfCode;
+    }
+
+    public String getDxfJson() {
+        return dxfJson;
+    }
+
+    public String getSfjTime() {
+        return sfjTime;
+    }
+
+    public String getBfjTime() {
+        return bfjTime;
+    }
+
+    public String getPrintTime() {
+        return printTime;
+    }
+
+    public String getCutCode() {
+        return cutCode;
+    }
+
+    public String getCutModel() {
+        return cutModel;
+    }
+
+    public String getCutTime() {
+        return cutTime;
+    }
+
+    public String getCutCheck() {
+        return cutCheck;
+    }
+
+    public String getFjCheck() {
+        return fjCheck;
+    }
+
+    public int getSort() {
+        return sort;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getPlanState() {
+        return planState;
+    }
 
     public String getMesAdviceId() {
         return mesAdviceId;
@@ -85,9 +227,6 @@ public class MesPlanEntity implements Serializable {
         this.cutUrl = cutUrl;
     }
 
-    public void setIsCheck(String isCheck) {
-        this.isCheck = isCheck;
-    }
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
@@ -97,13 +236,10 @@ public class MesPlanEntity implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public void setEmpId(String empId) {
-        this.empId = empId;
-    }
 
-    public void setTaryId(String taryId) {
-        this.taryId = taryId;
-    }
+//    public void setTaryId(String taryId) {
+//        this.taryId = taryId;
+//    }
 
     public void setErrCode(String errCode) {
         this.errCode = errCode;
@@ -137,9 +273,6 @@ public class MesPlanEntity implements Serializable {
         return cutUrl;
     }
 
-    public String getIsCheck() {
-        return isCheck;
-    }
 
     public String getCreateTime() {
         return createTime;
@@ -149,13 +282,10 @@ public class MesPlanEntity implements Serializable {
         return updateTime;
     }
 
-    public String getEmpId() {
-        return empId;
-    }
 
-    public String getTaryId() {
-        return taryId;
-    }
+//    public String getTaryId() {
+//        return taryId;
+//    }
 
     public String getErrCode() {
         return errCode;

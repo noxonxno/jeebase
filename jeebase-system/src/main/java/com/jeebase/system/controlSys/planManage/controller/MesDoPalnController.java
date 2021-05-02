@@ -28,10 +28,10 @@ public class MesDoPalnController {
      * @param
      * @return
      */
-    @PostMapping("/list")
+    @GetMapping("/list")
     @RequiresRoles("SYSADMIN")
-    @ApiOperation(value = "查询mes计划", notes = "查询mes可执行计划")
-    @ApiImplicitParam(paramType = "query", name = "mesPlan", value = "mes计划对象", required = false, dataType = "MesPlan")
+    @ApiOperation(value = "查询mes可执行计划", notes = "查询mes可执行计划")
+    @ApiImplicitParam(paramType = "query", name = "mesDoPlan", value = "mes可执行计划对象", required = false, dataType = "MesDoPlan")
     public PageResult<MesDoPlanEntity> queryMesDoPlan(MesDoPlanEntity mesDoPlanEntity, Page<MesDoPlanEntity> page) {
 
         Page<MesDoPlanEntity> mesDoPlanEntityPage = mesDoPlanService.selectList(page, mesDoPlanEntity);

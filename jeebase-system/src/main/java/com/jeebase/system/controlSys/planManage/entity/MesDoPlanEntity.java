@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 
-@TableName("")
+@TableName("mes_doplan")
 public class MesDoPlanEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -47,8 +47,8 @@ public class MesDoPlanEntity implements Serializable {
     private String updateTime;
 
 
-    @TableField("tary_id")
-    private String taryId;
+    @TableField("tray_id")
+    private String tray_id;
 
 
 
@@ -80,8 +80,8 @@ public class MesDoPlanEntity implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public void setTaryId(String taryId) {
-        this.taryId = taryId;
+    public void setTray_id(String taryId) {
+        this.tray_id = taryId;
     }
 
     public void setMesAdviceId(String mesAdviceId) {
@@ -112,8 +112,8 @@ public class MesDoPlanEntity implements Serializable {
         return updateTime;
     }
 
-    public String getTaryId() {
-        return taryId;
+    public String getTrayId() {
+        return tray_id;
     }
 
     public void setPlanCode(String planCode) {

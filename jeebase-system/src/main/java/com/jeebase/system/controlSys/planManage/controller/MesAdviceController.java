@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @RestController
 @RequestMapping("/mesAdvice")
@@ -40,7 +41,6 @@ public class MesAdviceController {
         Page<MesAdviceEntity> mesAdviceEntityPage = mesAdviceService.selectList(page,mesAdviceEntity);
         return new PageResult<>(mesAdviceEntityPage.getTotal(),mesAdviceEntityPage.getRecords());
     }
-
     /**
      * 详情展示/查看所属通知的所有mes计划
      * @param mesAdviceId
@@ -116,10 +116,12 @@ public class MesAdviceController {
      * @param
      * @return
      */
-    @RequestMapping("/importPlan")
-    public String importAndSave(){
-
-//      MesAdviceEntity mesAdviceEntity = mesAdviceService.getById(mesAdviceId);
-        return null;
+    @RequestMapping("/importExcel")
+    public Result<?> importAndSave(@RequestBody List<MesAdviceEntity> mesAdviceEntities){
+        boolean b = mesAdviceService.saveBatch(mesAdviceEntities);
+        if (b){
+            return new Result<>().success("批量导入成功");
+        }
+        return new Result<>().error("批量导入失败");
     }
 }

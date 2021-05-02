@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.jeebase.common.util.LocalDateTimeUtil;
 
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 
 @TableName("mes_advice")
@@ -24,8 +26,9 @@ public class MesAdviceEntity implements Serializable {
         @TableField("create_user")
         private String createUser;
 
+//        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         @TableField("create_time")
-        private Date createTime;
+        private LocalDateTime createTime;
 
         @TableField("plan_total")
         private int planTotal;
@@ -41,11 +44,11 @@ public class MesAdviceEntity implements Serializable {
                 this.state = state;
         }
 
-        public Date getCreateTime() {
+        public LocalDateTime getCreateTime() {
                 return createTime;
         }
 
-        public void setCreateTime(Date createTime) {
+        public void setCreateTime(LocalDateTime createTime) {
                 this.createTime = createTime;
         }
 
