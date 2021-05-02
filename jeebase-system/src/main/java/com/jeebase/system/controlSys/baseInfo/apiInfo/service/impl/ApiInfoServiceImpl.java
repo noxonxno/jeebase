@@ -93,7 +93,7 @@ public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfoEntitl
         String url = apiInfoEntitly.getApiIp()+apiInfoEntitly.getApiUrl();
         String res =  HttpUtils.doPost(url,JsonUtils.toJSONObject(apiInfoEntitly.getApiParam()));
 
-        System.err.println(res);
+        //System.err.println(res);
         JSONObject json = JsonUtils.toJSONObject(res);
         String code = json.get("code").toString();
         if(code.equals("200")){
