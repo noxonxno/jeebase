@@ -118,8 +118,10 @@ public class MesAdviceController {
      */
     @RequestMapping("/importExcel")
     public Result<?> importAndSave(@RequestBody List<MesAdviceEntity> mesAdviceEntities){
-        boolean b = mesAdviceService.saveBatch(mesAdviceEntities);
-        if (b){
+        if (mesAdviceEntities.size()<=0){
+            return new Result<>().error("批量导入失败,计划为空");
+        }
+        if (mesAdviceService.saveBatch(mesAdviceEntities)){
             return new Result<>().success("批量导入成功");
         }
         return new Result<>().error("批量导入失败");

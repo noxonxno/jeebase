@@ -34,5 +34,4 @@ public class MesAdviceServiceImpl extends ServiceImpl<IMesAdviceMapper, MesAdvic
         IPage<MesAdviceEntity> mesAdviceEntityIPage = mesAdviceMapper.selectPage(page, lambda);
         return  (Page<MesAdviceEntity>)mesAdviceEntityIPage;
     }
-
 }

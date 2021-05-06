@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jeebase.common.annotation.log.AroundLog;
 import com.jeebase.common.base.PageResult;
 import com.jeebase.common.base.Result;
+import com.jeebase.system.controlSys.reportAction.entity.FjActionEntity;
+import com.jeebase.system.controlSys.reportAction.service.IFjActionService;
 import com.jeebase.system.controlSys.taskManage.entity.FjTaskEntity;
 import com.jeebase.system.controlSys.taskManage.service.IFjTaskService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -12,6 +14,8 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 
 @RestController
 @RequestMapping("/fj")
@@ -19,6 +23,9 @@ public class FjTaskController {
 
     @Autowired
     private IFjTaskService fjTaskService;
+
+    @Autowired
+    private IFjActionService fjActionService;
 
     /**
      * 按条件查询列表
@@ -73,12 +80,12 @@ public class FjTaskController {
     /**
      * 删除通知
      */
-    @PostMapping("/delete/{mesAdviceId}")
+    @PostMapping("/delete/{fjTaskId}")
     @RequiresRoles("SYSADMIN")
     @ApiOperation(value = "删除分拣任务")
     @AroundLog(name = "删除分拣任务")
-    @ApiImplicitParam(paramType = "path", name = "mesAdviceId", value = "通知id", required = true, dataType = "String")
-    public Result<?> delete(@PathVariable("mesAdviceId") String fjTaskId) {
+    @ApiImplicitParam(paramType = "path", name = "fjTaskId", value = "通知id", required = true, dataType = "String")
+    public Result<?> delete(@PathVariable("fjTaskId") String fjTaskId) {
 
         boolean result = fjTaskService.removeById(fjTaskId);
         if (result) {
@@ -88,5 +95,22 @@ public class FjTaskController {
         }
     }
 
+    /**
+     * 执行分拣任务
+     */
+    @PostMapping("/do/{fjTaskId}")
+    @RequiresRoles("SYSADMIN")
+    @ApiOperation(value = "执行分拣任务")
+    @AroundLog(name = "执行分拣任务")
+    @ApiImplicitParam(paramType = "path", name = "FjTaskId", value = "通知id", required = true, dataType = "String")
+    public Result<?> doTask(@PathVariable("fjTaskId") String FjTaskId){
 
+        //创建初始报工对象
+        FjActionEntity fjActionEntity = new FjActionEntity();
+        //设置指令发送时间
+        LocalDateTime now = LocalDateTime.now();
+        fjActionEntity.setSendTime(now);
+        fjActionService.save(fjActionEntity);
+        return new Result<>().success();
+    }
 }

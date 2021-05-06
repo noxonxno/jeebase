@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @TableName("cut_task")
 public class CutTaskEntity implements Serializable {
@@ -28,7 +29,7 @@ public class CutTaskEntity implements Serializable {
     @TableField("station_id")
     private String stationId;
 
-    @TableField("slicing_file_type")
+    @TableField("cuf_type")
     private String slicingFileType;
 
     @TableField("cut_json")
@@ -44,19 +45,19 @@ public class CutTaskEntity implements Serializable {
     private String ctaskState;
 
     @TableField("start_time")
-    private Date startTime;
+    private LocalDateTime startTime;
 
     @TableField("end_time")
-    private Date endTime;
+    private LocalDateTime endTime;
 
     @TableField("create_time")
-    private String createTime;
+    private LocalDateTime createTime;
 
-    public String getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
@@ -100,11 +101,11 @@ public class CutTaskEntity implements Serializable {
         this.ctaskState = ctaskState;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
 
@@ -148,11 +149,11 @@ public class CutTaskEntity implements Serializable {
         return ctaskState;
     }
 
-    public Date getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public Date getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 }

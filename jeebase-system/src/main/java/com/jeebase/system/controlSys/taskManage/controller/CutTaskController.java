@@ -4,13 +4,18 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jeebase.common.annotation.log.AroundLog;
 import com.jeebase.common.base.PageResult;
 import com.jeebase.common.base.Result;
+import com.jeebase.system.controlSys.reportAction.entity.CutActionEntity;
+import com.jeebase.system.controlSys.reportAction.service.ICutActionService;
 import com.jeebase.system.controlSys.taskManage.entity.CutTaskEntity;
 import com.jeebase.system.controlSys.taskManage.service.ICutTaskService;
+import com.jeebase.system.utils.LocalDateTimeUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 
 @RestController
@@ -19,6 +24,9 @@ public class CutTaskController {
 
     @Autowired
     private ICutTaskService cutTaskService;
+
+    @Autowired
+    private ICutActionService cutActionService;
 
     /**
      * 按条件查询列表
@@ -72,18 +80,38 @@ public class CutTaskController {
     /**
      * 删除通知
      */
-    @PostMapping("/delete/{mesAdviceId}")
+    @PostMapping("/delete/{cutTaskId}")
     @RequiresRoles("SYSADMIN")
     @ApiOperation(value = "删除切割任务")
     @AroundLog(name = "删除切割任务")
-    @ApiImplicitParam(paramType = "path", name = "mesAdviceId", value = "通知id", required = true, dataType = "String")
-    public Result<?> delete(@PathVariable("mesAdviceId") String mesAdviceId) {
+    @ApiImplicitParam(paramType = "path", name = "cutTaskId", value = "通知id", required = true, dataType = "String")
+    public Result<?> delete(@PathVariable("cutTaskId") String cutTaskId) {
 
-        boolean result = cutTaskService.removeById(mesAdviceId);
+        boolean result = cutTaskService.removeById(cutTaskId);
         if (result) {
             return new Result<>().success("删除成功");
         } else {
             return new Result<>().error("删除失败");
         }
+    }
+
+    /**
+     * 执行切割任务
+     */
+    @PostMapping("/do/{cutTaskId}")
+    @RequiresRoles("SYSADMIN")
+    @ApiOperation(value = "执行切割任务")
+    @AroundLog(name = "执行切割任务")
+    @ApiImplicitParam(paramType = "path", name = "cutTaskId", value = "通知id", required = true, dataType = "String")
+    public Result<?> doTask(@PathVariable("cutTaskId") String cutTaskId){
+
+        //创建初始报工记录，并入库
+        CutActionEntity cutActionEntity = new CutActionEntity();
+        //设置指令发送时间
+        LocalDateTime now = LocalDateTime.now();
+        cutActionEntity.setSendTime(now);
+        cutActionService.save(cutActionEntity);
+
+        return new Result<>().success();
     }
 }
