@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.Valid;
+
 /**
  * @author DELL
  */
@@ -44,7 +46,7 @@ public class ApiController {
     }
 
     @RequestMapping("addApiInfo")
-    public Result<?>  addApiInfo(@RequestBody ApiInfoEntitly apiInfoEntitly) {
+    public Result<?>  addApiInfo(@RequestBody @Valid ApiInfoEntitly apiInfoEntitly) {
 
         boolean result = iApiService.addApiInfo(apiInfoEntitly);
         if (result) {
@@ -56,7 +58,7 @@ public class ApiController {
 
 
     @RequestMapping("updateApiInfo")
-    public Result<?>  updateApiInfo(@RequestBody ApiInfoEntitly apiInfoEntitly) {
+    public Result<?>  updateApiInfo(@RequestBody @Valid ApiInfoEntitly apiInfoEntitly) {
 
         boolean result = iApiService.updateApiInfo(apiInfoEntitly);
         if (result) {

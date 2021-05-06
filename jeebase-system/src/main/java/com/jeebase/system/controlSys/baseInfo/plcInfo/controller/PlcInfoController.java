@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.Valid;
+
 /**
  * @author DELL
  */
@@ -57,7 +59,7 @@ public class PlcInfoController {
      * @return
      */
     @RequestMapping("addPlcInfo")
-    public Result<?>  addPlcInfo(@RequestBody PlcinfoEntitly plcinfoEntitly) {
+    public Result<?>  addPlcInfo(@RequestBody @Valid PlcinfoEntitly plcinfoEntitly) {
         boolean result = iPlcInfoService.addPlcInfo(plcinfoEntitly);
         if (result) {
             return new Result<>().success("新增成功");
@@ -73,7 +75,7 @@ public class PlcInfoController {
      * @return
      */
     @RequestMapping("updatePlcInfo")
-    public Result<?>  updatePlcInfo(@RequestBody PlcinfoEntitly plcinfoEntitly) {
+    public Result<?>  updatePlcInfo(@RequestBody @Valid PlcinfoEntitly plcinfoEntitly) {
         boolean result = iPlcInfoService.updatePlcInfo(plcinfoEntitly);
         if (result) {
             return new Result<>().success("修改成功");

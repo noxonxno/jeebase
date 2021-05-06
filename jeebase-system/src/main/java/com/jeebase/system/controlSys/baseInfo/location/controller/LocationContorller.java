@@ -17,6 +17,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/location")
 public class LocationContorller {
@@ -71,7 +73,7 @@ public class LocationContorller {
      * @return
      */
     @RequestMapping("addLocation")
-    public Result<?> addLocation(@RequestBody LocationEntitly locationEntitly) {
+    public Result<?> addLocation(@RequestBody @Valid LocationEntitly locationEntitly) {
         boolean result = iLocationService.addLocation(locationEntitly);
         if (result) {
             return new Result<>().success("新增成功");
@@ -87,7 +89,7 @@ public class LocationContorller {
      * @return
      */
     @RequestMapping("updateLocation")
-    public Result<?> updateLocation(@RequestBody LocationEntitly locationEntitly) {
+    public Result<?> updateLocation(@RequestBody @Valid LocationEntitly locationEntitly) {
         boolean result = iLocationService.updateLocation(locationEntitly);
         if (result) {
             return new Result<>().success("修改成功");

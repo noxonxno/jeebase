@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.Valid;
+
 /**
  * @author DELL
  */
@@ -53,7 +55,7 @@ public class TaryController {
      * @return
      */
     @RequestMapping(value = "updateTary", method = RequestMethod.POST)
-    public Result<?> updateTary(@RequestBody TaryEntitly tary) {
+    public Result<?> updateTary(@RequestBody @Valid TaryEntitly tary) {
         boolean result = iTaryService.updateTary(tary);
         if (result) {
             return new Result<>().success("删除成功");
@@ -69,7 +71,7 @@ public class TaryController {
      * @return
      */
     @RequestMapping(value = "addTary", method = RequestMethod.POST)
-    public Result<?> addTary(@RequestBody TaryEntitly tary) {
+    public Result<?> addTary(@RequestBody @Valid TaryEntitly tary) {
         boolean result = iTaryService.addTary(tary);
         if (result) {
             return new Result<>().success("新增成功");

@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author DELL
@@ -103,5 +105,13 @@ public class DeviceServiceImpl extends ServiceImpl<IDeviceMapper, DeviceEntitly>
         return false;
     }
 
-
+    @Override
+    public Map<String, String> getDeviceName() {
+        List<DeviceEntitly> list = iDeviceMapper.selectList(new QueryWrapper<>());
+        Map<String, String> map = new HashMap<>(list.size());
+        list.forEach(item -> {
+            map.put(item.getDeviceCode(), item.getDeviceCode());
+        });
+        return map;
+    }
 }
