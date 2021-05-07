@@ -16,7 +16,7 @@ public class WmsTaskEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private String id;
 
     @TableField("plan_id")
     private String planId;
@@ -31,7 +31,7 @@ public class WmsTaskEntity implements Serializable {
     private String wsmTime;
 
     @TableField("location_code")
-    private String locationTode;
+    private String locationCode;
 
     @TableField("fplan_state")
     private String fplanState;
@@ -46,11 +46,11 @@ public class WmsTaskEntity implements Serializable {
     private LocalDateTime endTime;
 
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -86,12 +86,12 @@ public class WmsTaskEntity implements Serializable {
         this.wsmTime = wsmTime;
     }
 
-    public String getLocationTode() {
-        return locationTode;
+    public String getLocationCode() {
+        return locationCode;
     }
 
-    public void setLocationTode(String locationTode) {
-        this.locationTode = locationTode;
+    public void setLocationCode(String locationTode) {
+        this.locationCode = locationTode;
     }
 
     public String getFplanState() {

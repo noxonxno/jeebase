@@ -118,15 +118,15 @@ public class CutAnalysisApi {
             String result = HttpUtils.doPost(url, params);
         }
     }
-    public void doCuttPlan(String request_data){
+    public void doCutPlan(String request_data){
         String url = "";
         Map<String,String> params = new HashMap<>();
-        List<CutTask> catPlanLists = cutAnalysisservice.selcetCatfileList();
+        List<CutTask> catPlanList = cutAnalysisservice.selcetCatfileList();
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        for (CutTask catPlanList : catPlanLists) {
+        for (CutTask catPlan : catPlanList) {
             params.put("request_uuid",UUID.randomUUID().toString());
-            params.put("request_data", JSON.toJSONString(catPlanList));
+            params.put("request_data", JSON.toJSONString(catPlan));
             params.put("request_time",formatter.format(date));
             String result = HttpUtils.doPost(url, params);
         }

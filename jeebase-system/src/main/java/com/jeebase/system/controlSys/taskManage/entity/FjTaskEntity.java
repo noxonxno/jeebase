@@ -16,7 +16,7 @@ public class FjTaskEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private String id;
 
     @TableField("plan_id")
     private String planId;
@@ -59,7 +59,7 @@ public class FjTaskEntity implements Serializable {
         this.createTime = createTime;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -103,7 +103,7 @@ public class FjTaskEntity implements Serializable {
         this.endTime = endTime;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 

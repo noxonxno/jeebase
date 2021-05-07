@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jeebase.common.annotation.log.AroundLog;
 import com.jeebase.common.base.PageResult;
 import com.jeebase.common.base.Result;
+import com.jeebase.system.controlSys.api.WMSApi;
 import com.jeebase.system.controlSys.reportAction.entity.WmsActionEntity;
 import com.jeebase.system.controlSys.reportAction.service.IWmsActionService;
+import com.jeebase.system.controlSys.taskManage.entity.CutTaskEntity;
 import com.jeebase.system.controlSys.taskManage.entity.WmsTaskEntity;
 import com.jeebase.system.controlSys.taskManage.service.IWmsTaskService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -15,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/wms")
@@ -25,6 +29,9 @@ public class WmsTaskController {
 
     @Autowired
     private IWmsActionService wmsActionService;
+
+    @Autowired
+    private WMSApi wmsApi;
 
     /**
      * 按条件查询列表
@@ -97,19 +104,31 @@ public class WmsTaskController {
     /**
      * 执行上下料任务
      */
-    @PostMapping("/do/{wsTaskId}")
+    @PostMapping("/do/{wmsTaskId}")
     @RequiresRoles("SYSADMIN")
     @ApiOperation(value = "执行上下料任务")
     @AroundLog(name = "执行上下料任务")
-    @ApiImplicitParam(paramType = "path", name = "wsTaskId", value = "通知id", required = true, dataType = "String")
-    public Result<?> doTask(@PathVariable("wsTaskId") String wsTaskId){
+    @ApiImplicitParam(paramType = "path", name = "wmsTaskId", value = "通知id", required = true, dataType = "String")
+    public Result<?> doTask(@PathVariable("wmsTaskId") String wmsTaskId){
+
+        //调用api执行上下料任务
+        wmsApi.doWmsPlan(new ArrayList<String>());
 
         //创建初始报工对象
         WmsActionEntity wmsActionEntity = new WmsActionEntity();
+        wmsActionEntity.setId(UUID.randomUUID().toString());
         //设置指令发送时间
         LocalDateTime now = LocalDateTime.now();
         wmsActionEntity.setSendTime(now);
+        //报工对象入库
         wmsActionService.save(wmsActionEntity);
+
+        //更改任务执行状态
+        WmsTaskEntity wmsTaskEntity = new WmsTaskEntity();
+        wmsTaskEntity.setId(wmsTaskId);
+        wmsTaskEntity.setFplanState("1");
+        wmsTaskService.updateById(wmsTaskEntity);
+
         return new Result<>().success();
     }
 }

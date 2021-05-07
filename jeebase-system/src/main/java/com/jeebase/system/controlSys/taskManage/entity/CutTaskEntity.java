@@ -15,7 +15,7 @@ public class CutTaskEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private String id;
 
     @TableField("plan_id")
     private String planId;
@@ -25,6 +25,17 @@ public class CutTaskEntity implements Serializable {
 
     @TableField("cuf_url")
     private String cufUrl;
+
+    @TableField("steel_type")
+    private String steelType;
+
+    public String getSteelType() {
+        return steelType;
+    }
+
+    public void setSteelType(String steelType) {
+        this.steelType = steelType;
+    }
 
     @TableField("station_id")
     private String stationId;
@@ -61,7 +72,7 @@ public class CutTaskEntity implements Serializable {
         this.createTime = createTime;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -109,7 +120,7 @@ public class CutTaskEntity implements Serializable {
         this.endTime = endTime;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 

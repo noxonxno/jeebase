@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jeebase.common.annotation.log.AroundLog;
 import com.jeebase.common.base.PageResult;
 import com.jeebase.common.base.Result;
+import com.jeebase.system.controlSys.api.SortingApi;
 import com.jeebase.system.controlSys.reportAction.entity.FjActionEntity;
 import com.jeebase.system.controlSys.reportAction.service.IFjActionService;
 import com.jeebase.system.controlSys.taskManage.entity.FjTaskEntity;
 import com.jeebase.system.controlSys.taskManage.service.IFjTaskService;
+import com.jeebase.system.utils.UUIDUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresRoles;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @RestController
@@ -26,6 +29,9 @@ public class FjTaskController {
 
     @Autowired
     private IFjActionService fjActionService;
+
+    @Autowired
+    private SortingApi sortingApi;
 
     /**
      * 按条件查询列表
@@ -98,19 +104,33 @@ public class FjTaskController {
     /**
      * 执行分拣任务
      */
-    @PostMapping("/do/{fjTaskId}")
+    @PostMapping("/do/{fjTaskId}/{fjState}")
     @RequiresRoles("SYSADMIN")
     @ApiOperation(value = "执行分拣任务")
     @AroundLog(name = "执行分拣任务")
     @ApiImplicitParam(paramType = "path", name = "FjTaskId", value = "通知id", required = true, dataType = "String")
-    public Result<?> doTask(@PathVariable("fjTaskId") String FjTaskId){
+    public Result<?> doTask(@PathVariable("fjTaskId") String fjTaskId,@PathVariable("fjState") String fjState){
+
+        //调用api执行分拣任务
+        sortingApi.doFJPlan("");
 
         //创建初始报工对象
         FjActionEntity fjActionEntity = new FjActionEntity();
+        //设置id
+        fjActionEntity.setId(UUID.randomUUID().toString());
         //设置指令发送时间
         LocalDateTime now = LocalDateTime.now();
         fjActionEntity.setSendTime(now);
+        //设置分拣动作类型 0：大件 1：小件 2：喷码
+        fjActionEntity.setActionName(fjState);
+
         fjActionService.save(fjActionEntity);
+
+        //更改任务执行状态
+        FjTaskEntity fjTaskEntity = new FjTaskEntity();
+        fjTaskEntity.setId(fjTaskId);
+        fjTaskEntity.setFtaskState("1");//0:等待执行,1:正在执行,2:执行完成,3:执行错误
+        fjTaskService.updateById(fjTaskEntity);
         return new Result<>().success();
     }
 }

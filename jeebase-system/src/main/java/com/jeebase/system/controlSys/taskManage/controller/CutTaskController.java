@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jeebase.common.annotation.log.AroundLog;
 import com.jeebase.common.base.PageResult;
 import com.jeebase.common.base.Result;
+import com.jeebase.system.controlSys.api.CutAnalysisApi;
 import com.jeebase.system.controlSys.reportAction.entity.CutActionEntity;
 import com.jeebase.system.controlSys.reportAction.service.ICutActionService;
 import com.jeebase.system.controlSys.taskManage.entity.CutTaskEntity;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @RestController
@@ -27,6 +29,9 @@ public class CutTaskController {
 
     @Autowired
     private ICutActionService cutActionService;
+
+    @Autowired
+    private CutAnalysisApi cutAnalysisApi;
 
     /**
      * 按条件查询列表
@@ -105,12 +110,25 @@ public class CutTaskController {
     @ApiImplicitParam(paramType = "path", name = "cutTaskId", value = "通知id", required = true, dataType = "String")
     public Result<?> doTask(@PathVariable("cutTaskId") String cutTaskId){
 
+        //调用api开始任务执行
+        cutAnalysisApi.doCutPlan("");
+
         //创建初始报工记录，并入库
         CutActionEntity cutActionEntity = new CutActionEntity();
+        cutActionEntity.setId(UUID.randomUUID().toString());
         //设置指令发送时间
         LocalDateTime now = LocalDateTime.now();
         cutActionEntity.setSendTime(now);
+        //设置动作名称
+        //设置指令接口
+
         cutActionService.save(cutActionEntity);
+
+        //更改任务执行状态
+        CutTaskEntity cutTaskEntity = new CutTaskEntity();
+        cutTaskEntity.setId(cutTaskId);
+        cutTaskEntity.setCtaskState("1");
+        cutTaskService.updateById(cutTaskEntity);
 
         return new Result<>().success();
     }
