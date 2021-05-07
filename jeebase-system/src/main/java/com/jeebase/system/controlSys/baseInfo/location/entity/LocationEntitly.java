@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -32,14 +33,17 @@ public class LocationEntitly implements Serializable {
     /**
      * 库位存放型号
      */
+    @NotBlank(message="库位存放型号不能为空")
     private String steelType;
     /**
      * 库位最大可存放
      */
+    @NotBlank(message="库位最大可存放量不能为空")
     private Integer locationMaxNum;
     /**
      * 库存数量
      */
+    @NotBlank(message="库存数量不能为空")
     private Integer locationTotal;
     /**
      * 更新时间

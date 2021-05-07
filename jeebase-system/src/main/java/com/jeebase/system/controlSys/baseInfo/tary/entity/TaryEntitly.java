@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -30,6 +31,7 @@ public class TaryEntitly implements Serializable {
     /**
      * 托盘信息
      */
+    @NotBlank(message="托盘信息不能为空")
     private String taryInfo;
 
     /**
@@ -40,6 +42,7 @@ public class TaryEntitly implements Serializable {
     /**
      * 托盘使用次数
      */
+    @NotBlank(message="托盘使用次数不能为空")
     private Integer taryNum;
 
     /**
@@ -73,5 +76,6 @@ public class TaryEntitly implements Serializable {
     /**
      * 使用阈值
      */
+    @NotBlank(message="阈值不能为空")
     private Integer taryFixNum;
 }

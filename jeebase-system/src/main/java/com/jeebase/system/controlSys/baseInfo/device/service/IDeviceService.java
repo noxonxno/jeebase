@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.jeebase.system.controlSys.baseInfo.device.entity.DeviceEntitly;
 import com.jeebase.system.controlSys.baseInfo.location.entity.LocationEntitly;
 
+import java.util.Map;
+
 /**
  * @author DELL
  */
@@ -17,4 +19,5 @@ public interface IDeviceService extends IService<DeviceEntitly> {
     boolean updateDevice(DeviceEntitly deviceEntitly);
     boolean deleteDevice(String deviceId);
     boolean bacthDevice(String ids);
+    Map<String,String> getDeviceName();
 }

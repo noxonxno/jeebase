@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.Valid;
+
 /**
  * @author DELL
  */
@@ -37,7 +39,7 @@ public class DeviceController {
     }
 
     @RequestMapping("addDevice")
-    public Result<?>  addDevice(@RequestBody DeviceEntitly deviceEntitly) {
+    public Result<?>  addDevice(@RequestBody @Valid DeviceEntitly deviceEntitly) {
         boolean result = iDeviceService.addDevice(deviceEntitly);
         if (result) {
             return new Result<>().success("新增成功");
@@ -47,7 +49,7 @@ public class DeviceController {
     }
 
     @RequestMapping("updateDevice")
-    public Result<?>  updateDevice(@RequestBody DeviceEntitly deviceEntitly) {
+    public Result<?>  updateDevice(@RequestBody @Valid DeviceEntitly deviceEntitly) {
         boolean result = iDeviceService.updateDevice(deviceEntitly);
         if (result) {
             return new Result<>().success("修改成功");
@@ -85,4 +87,8 @@ public class DeviceController {
         }
     }
 
+    @RequestMapping("selectDeviceCodeMap")
+    public Result<?> selectDeviceCodeMap(){
+        return new Result<>().success().put(iDeviceService.getDeviceName());
+    }
 }
