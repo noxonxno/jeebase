@@ -64,6 +64,16 @@ public class CutTaskEntity implements Serializable {
     @TableField("create_time")
     private LocalDateTime createTime;
 
+    private String exeModel;
+
+    public String getExeModel() {
+        return exeModel;
+    }
+
+    public void setExeModel(String exeModel) {
+        this.exeModel = exeModel;
+    }
+
     public LocalDateTime getCreateTime() {
         return createTime;
     }
@@ -167,4 +177,6 @@ public class CutTaskEntity implements Serializable {
     public LocalDateTime getEndTime() {
         return endTime;
     }
+
+
 }

@@ -12,8 +12,8 @@ import java.io.Serializable;
 public class MesPlanEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    @TableId(value = "id")
+    private String id;
 
     @TableField("steel_code")
     private String steelCode;
@@ -207,7 +207,7 @@ public class MesPlanEntity implements Serializable {
         return mesAdviceId;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -253,7 +253,7 @@ public class MesPlanEntity implements Serializable {
         this.mesAdviceId = mesAdviceId;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 

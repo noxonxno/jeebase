@@ -11,4 +11,6 @@ public interface IMesDoPlanService extends IService<MesDoPlanEntity> {
 
 
     void create(MesPlanEntity mesPlan) throws Exception;
+
+    boolean doAutoTask(String planCode);
 }

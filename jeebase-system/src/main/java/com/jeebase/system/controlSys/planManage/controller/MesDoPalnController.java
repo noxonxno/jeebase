@@ -2,6 +2,7 @@ package com.jeebase.system.controlSys.planManage.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jeebase.common.annotation.log.AroundLog;
+import com.jeebase.common.base.BusinessException;
 import com.jeebase.common.base.PageResult;
 import com.jeebase.common.base.Result;
 import com.jeebase.system.common.dto.DictInfo;
@@ -91,6 +92,26 @@ public class MesDoPalnController {
         } else {
             return new Result<>().error("删除失败");
         }
+    }
+
+    /**
+     * 执行自动模式计划
+     */
+    @PostMapping("/do/{planCode}")
+    @RequiresRoles("SYSADMIN")
+    @ApiOperation(value = "执行上下料任务")
+    @AroundLog(name = "执行上下料任务")
+    @ApiImplicitParam(paramType = "path", name = "planCode", value = "通知id", required = true, dataType = "String")
+    public Result<?> doTask(@PathVariable("planCode") String planCode){
+
+        try {
+            if (mesDoPlanService.doAutoTask(planCode)){
+                return new Result<>().success();
+            }
+        }catch (BusinessException e){
+            return new Result<>().error(e.getMessage());
+        }
+        return new Result<>().error("执行失败，请联系开发人员");
     }
 
 }

@@ -41,7 +41,7 @@ public class WmsTaskController {
     @GetMapping("/list")
     @RequiresRoles("SYSADMIN")
     @ApiOperation(value = "查询上料任务")
-    public PageResult<WmsTaskEntity> selectFjTaskList(WmsTaskEntity wmsTaskEntity, Page<WmsTaskEntity> page){
+    public PageResult<WmsTaskEntity> selectWmsTaskList(WmsTaskEntity wmsTaskEntity, Page<WmsTaskEntity> page){
 
         Page<WmsTaskEntity> wmsTaskEntityPage = wmsTaskService.selectList(page, wmsTaskEntity);
         return new PageResult<>(wmsTaskEntityPage.getTotal(), wmsTaskEntityPage.getRecords());
@@ -102,33 +102,22 @@ public class WmsTaskController {
     }
 
     /**
-     * 执行上下料任务
+     * 手动执行上下料任务
      */
-    @PostMapping("/do/{wmsTaskId}")
+    @PostMapping("/do/{wmsTaskId}/{planCode}")
     @RequiresRoles("SYSADMIN")
     @ApiOperation(value = "执行上下料任务")
     @AroundLog(name = "执行上下料任务")
     @ApiImplicitParam(paramType = "path", name = "wmsTaskId", value = "通知id", required = true, dataType = "String")
-    public Result<?> doTask(@PathVariable("wmsTaskId") String wmsTaskId){
+    public Result<?> doTask(@PathVariable("wmsTaskId") String wmsTaskId,@PathVariable("planCode") String planCode){
 
-        //调用api执行上下料任务
-        wmsApi.doWmsPlan(new ArrayList<String>());
-
-        //创建初始报工对象
-        WmsActionEntity wmsActionEntity = new WmsActionEntity();
-        wmsActionEntity.setId(UUID.randomUUID().toString());
-        //设置指令发送时间
-        LocalDateTime now = LocalDateTime.now();
-        wmsActionEntity.setSendTime(now);
-        //报工对象入库
-        wmsActionService.save(wmsActionEntity);
-
-        //更改任务执行状态
-        WmsTaskEntity wmsTaskEntity = new WmsTaskEntity();
-        wmsTaskEntity.setId(wmsTaskId);
-        wmsTaskEntity.setFplanState("1");
-        wmsTaskService.updateById(wmsTaskEntity);
-
-        return new Result<>().success();
+        try {
+            if (wmsTaskService.doTask(wmsTaskId, planCode)){
+                return new Result<>().success();
+            }
+        }catch (Exception e){
+            return new Result<>().error(e.getMessage());
+        }
+        return new Result<>().error("执行失败，请联系开发人员");
     }
 }

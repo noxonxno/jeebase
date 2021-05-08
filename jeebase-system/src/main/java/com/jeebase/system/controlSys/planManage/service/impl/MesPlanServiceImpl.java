@@ -49,7 +49,7 @@ public class MesPlanServiceImpl extends ServiceImpl<IMesPlanMapper, MesPlanEntit
         }
 
         //若完成所有校验则生成可执行计划
-        if ("".equals(mesPlan.getFjCheck())){
+        if ("1".equals(mesPlan.getFjCheck()) && "1".equals(mesPlan.getCutCheck())){
             mesDoPlanService.create(mesPlan);
         }
     }

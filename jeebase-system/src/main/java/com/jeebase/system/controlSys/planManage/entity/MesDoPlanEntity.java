@@ -6,20 +6,23 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @TableName("mes_doplan")
 public class MesDoPlanEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    @TableId(value = "id")
+    private String id;
 
     @TableField("plan_code")
     private String planCode;
 
     @TableField("task_type")
     private String taskType;
+
+    private String planState;
 
     @TableField("place")
     private String place;
@@ -39,12 +42,11 @@ public class MesDoPlanEntity implements Serializable {
     @TableField("cut_url")
     private String cutUrl;
 
-
     @TableField("create_time")
-    private String createTime;
+    private LocalDateTime createTime;
 
     @TableField("update_time")
-    private String updateTime;
+    private LocalDateTime updateTime;
 
 
     @TableField("tray_id")
@@ -56,7 +58,7 @@ public class MesDoPlanEntity implements Serializable {
         return mesAdviceId;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -72,11 +74,11 @@ public class MesDoPlanEntity implements Serializable {
         this.cutUrl = cutUrl;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
-    public void setUpdateTime(String updateTime) {
+    public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
     }
 
@@ -88,7 +90,7 @@ public class MesDoPlanEntity implements Serializable {
         this.mesAdviceId = mesAdviceId;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
@@ -104,11 +106,11 @@ public class MesDoPlanEntity implements Serializable {
         return cutUrl;
     }
 
-    public String getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public String getUpdateTime() {
+    public LocalDateTime getUpdateTime() {
         return updateTime;
     }
 
@@ -122,5 +124,41 @@ public class MesDoPlanEntity implements Serializable {
 
     public String getPlanCode() {
         return planCode;
+    }
+
+    public String getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(String taskType) {
+        this.taskType = taskType;
+    }
+
+    public String getPlanState() {
+        return planState;
+    }
+
+    public void setPlanState(String planState) {
+        this.planState = planState;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    public String getExeModel() {
+        return exeModel;
+    }
+
+    public void setExeModel(String exeModel) {
+        this.exeModel = exeModel;
+    }
+
+    public String getTray_id() {
+        return tray_id;
     }
 }

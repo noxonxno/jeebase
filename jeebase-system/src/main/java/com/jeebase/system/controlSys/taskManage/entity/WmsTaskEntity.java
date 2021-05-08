@@ -15,7 +15,7 @@ public class WmsTaskEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id")
     private String id;
 
     @TableField("plan_id")
@@ -45,6 +45,15 @@ public class WmsTaskEntity implements Serializable {
     @TableField("end_time")
     private LocalDateTime endTime;
 
+    private String exeModel;
+
+    public String getExeModel() {
+        return exeModel;
+    }
+
+    public void setExeModel(String exeModel) {
+        this.exeModel = exeModel;
+    }
 
     public String getId() {
         return id;

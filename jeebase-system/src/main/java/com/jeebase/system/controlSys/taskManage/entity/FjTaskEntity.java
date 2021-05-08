@@ -15,7 +15,7 @@ public class FjTaskEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id")
     private String id;
 
     @TableField("plan_id")
@@ -50,6 +50,16 @@ public class FjTaskEntity implements Serializable {
 
     @TableField("create_time")
     private LocalDateTime createTime;
+
+    private String exeModel;
+
+    public String getExeModel() {
+        return exeModel;
+    }
+
+    public void setExeModel(String exeModel) {
+        this.exeModel = exeModel;
+    }
 
     public LocalDateTime getCreateTime() {
         return createTime;

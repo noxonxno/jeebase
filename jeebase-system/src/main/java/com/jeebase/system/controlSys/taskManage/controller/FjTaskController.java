@@ -111,26 +111,13 @@ public class FjTaskController {
     @ApiImplicitParam(paramType = "path", name = "FjTaskId", value = "通知id", required = true, dataType = "String")
     public Result<?> doTask(@PathVariable("fjTaskId") String fjTaskId,@PathVariable("fjState") String fjState){
 
-        //调用api执行分拣任务
-        sortingApi.doFJPlan("");
-
-        //创建初始报工对象
-        FjActionEntity fjActionEntity = new FjActionEntity();
-        //设置id
-        fjActionEntity.setId(UUID.randomUUID().toString());
-        //设置指令发送时间
-        LocalDateTime now = LocalDateTime.now();
-        fjActionEntity.setSendTime(now);
-        //设置分拣动作类型 0：大件 1：小件 2：喷码
-        fjActionEntity.setActionName(fjState);
-
-        fjActionService.save(fjActionEntity);
-
-        //更改任务执行状态
-        FjTaskEntity fjTaskEntity = new FjTaskEntity();
-        fjTaskEntity.setId(fjTaskId);
-        fjTaskEntity.setFtaskState("1");//0:等待执行,1:正在执行,2:执行完成,3:执行错误
-        fjTaskService.updateById(fjTaskEntity);
-        return new Result<>().success();
+        try {
+            if (fjTaskService.doTask(fjTaskId, fjState)){
+                return new Result<>().success();
+            }
+        }catch (Exception e){
+            return new Result<>().error(e.getMessage());
+        }
+        return new Result<>().error("执行失败，请联系开发人员");
     }
 }
