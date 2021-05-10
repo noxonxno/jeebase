@@ -104,3 +104,8 @@ restTemplate:
   connectTimeout: 2000
   #读取超时默认30s
   readTimeout: 30000
+
+opcServer:
+  host: 192.168.0.108
+  user: OPCServer
+  password: 123456

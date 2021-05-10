@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.jeebase.system.controlSys.api.entity.*;
 import com.jeebase.system.controlSys.api.service.CutAnalysisService;
 import com.jeebase.system.utils.HttpUtils;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -19,90 +21,82 @@ public class CutAnalysisApi {
     /**
      * 保存接收计划解析校验结果
      *
-     * @param request_uuid 随机生成32位UUID
-     * @param request_time 请求时间，格式参考约束
-     * @param request_data 请求业务参数
      * @return
      */
     @RequestMapping(value = "/PlanCutAnalysisResults", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody
-    public ResponseResult<List<String>> planCutAnalysisResults(String request_uuid, String request_time, @RequestBody CutTask request_data) {
-        if (request_uuid == null || request_time == null || request_data == null) {
+    public ResponseResult<List<String>> planCutAnalysisResults(@RequestBody CutAnalysisApiPlanCutAnalysisResults data) {
+        if (data.getRequest_uuid() == null || data.getRequest_time() == null || data.getRequest_data() == null) {
             return Response.makeRsp(100, "参数不能为空");
         }
-        ArrayList<String> data = new ArrayList<>();
+        ArrayList<String> response_data = new ArrayList<>();
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         try {
-            List<CutTask> plan_list = request_data.getPlan_list();
-            for (CutTask cutTask : plan_list) {
+            CutTask request_data = data.getRequest_data();
+            for (CutTask cutTask : request_data.getPlan_list()) {
                 cutAnalysisservice.save(cutTask);
             }
-            data.add(request_uuid);
-            data.add(formatter.format(date));
-            return Response.makeOKRsp(data);
+            response_data.add(data.getRequest_uuid());
+            response_data.add(formatter.format(date));
+            return Response.makeOKRsp(response_data);
         } catch (Exception e) {
             e.printStackTrace();
-            data.add(request_uuid);
-            data.add(formatter.format(date));
-            return Response.makeErrRsp("保存接收计划解析校验结果异常", data);
+            return Response.makeErrRsp("保存接收计划解析校验结果异常", response_data);
         }
     }
 
     /**
      * 切割任务执行结果接口
      *
-     * @param request_uuid 随机生成32位UUID
-     * @param request_time 请求时间，格式参考约束
-     * @param request_data 请求业务参数
      * @return
      */
     @RequestMapping(value = "/PlanCutExecutionResults",method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody
-    public ResponseResult<List<String>> planCutExecutionResults(String request_uuid, String request_time, @RequestBody CutAtion request_data) {
-        if (request_uuid == null || request_time == null || request_data == null) {
+    public ResponseResult<List<String>> planCutExecutionResults( @RequestBody CutAnalysisApiPlanCutExecutionResults data) {
+        if (data.getRequest_uuid() == null || data.getRequest_time() == null || data.getRequest_data() == null) {
             return Response.makeRsp(100, "参数不能为空");
         }
-        ArrayList<String> data = new ArrayList<>();
+        ArrayList<String> response_data = new ArrayList<>();
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         try {
-//            cutAnalysisservice.save(planCutResults);
+            CutAtion request_data = data.getRequest_data();
             //TODO
-            data.add(request_uuid);
-            data.add(formatter.format(date));
-            return Response.makeOKRsp(data);
+            response_data.add(data.getRequest_uuid());
+            response_data.add(formatter.format(date));
+            return Response.makeOKRsp(response_data);
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.makeErrRsp("保存单零件喷码执行结果异常", data);
+            return Response.makeErrRsp("保存接收计划解析校验结果异常", response_data);
         }
     }
     /**
      * 接收切割机状态接口
      *
-     * @param request_uuid 随机生成32位UUID
-     * @param request_time 请求时间，格式参考约束
-     * @param request_data 请求业务参数
+
      * @return
      */
     @RequestMapping(value = "/CutMachineStatus",method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody
-    public ResponseResult<List<String>> cutMachineStatus(String request_uuid, String request_time, @RequestBody CutAtion request_data) {
-        if (request_uuid == null || request_time == null || request_data == null) {
+    public ResponseResult<List<String>> cutMachineStatus( @RequestBody CutAnalysisApiCutMachineStatus data) {
+        if (data.getRequest_uuid() == null || data.getRequest_time() == null || data.getRequest_data() == null) {
             return Response.makeRsp(100, "参数不能为空");
         }
-        ArrayList<String> data = new ArrayList<>();
+        ArrayList<String> response_data = new ArrayList<>();
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         try {
-//            cutAnalysisservice.save(planCutResults);
-            //TODO
-            data.add(request_uuid);
-            data.add(formatter.format(date));
-            return Response.makeOKRsp(data);
+            List<MachineStatus> request_data = data.getRequest_data();
+            for (MachineStatus request_datum : request_data) {
+                //TODO
+            }
+            response_data.add(data.getRequest_uuid());
+            response_data.add(formatter.format(date));
+            return Response.makeOKRsp(response_data);
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.makeErrRsp("保存单零件喷码执行结果异常", data);
+            return Response.makeErrRsp("保存单零件喷码执行结果异常", response_data);
         }
     }
     public void analyzeVerifyCuttPlan(String request_data){
