@@ -12,6 +12,8 @@ import com.jeebase.system.controlSys.planManage.service.IMesAdviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 
 @Service
 public class MesAdviceServiceImpl extends ServiceImpl<IMesAdviceMapper, MesAdviceEntity> implements IMesAdviceService {
@@ -31,7 +33,7 @@ public class MesAdviceServiceImpl extends ServiceImpl<IMesAdviceMapper, MesAdvic
         LambdaQueryWrapper<MesAdviceEntity> lambda = new QueryWrapper<MesAdviceEntity>().lambda();
         lambda.eq(mesAdviceEntity.getState() != null, MesAdviceEntity::getState, mesAdviceEntity.getState())
                 .eq(mesAdviceEntity.getAdviceOrder() != 0,MesAdviceEntity::getAdviceOrder,mesAdviceEntity.getAdviceOrder())
-                .eq(mesAdviceEntity.getCreateTime() != null,MesAdviceEntity::getCreateTime,mesAdviceEntity.getCreateTime());//该时间搜索有误。
+                .between(mesAdviceEntity.getCreateTime() != null,MesAdviceEntity::getCreateTime, mesAdviceEntity.getSearchTime(),mesAdviceEntity.getCreateTime());
 
         IPage<MesAdviceEntity> mesAdviceEntityIPage = mesAdviceMapper.selectPage(page, lambda);
         return  (Page<MesAdviceEntity>)mesAdviceEntityIPage;

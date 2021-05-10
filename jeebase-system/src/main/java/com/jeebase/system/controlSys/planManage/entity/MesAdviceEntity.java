@@ -36,7 +36,15 @@ public class MesAdviceEntity implements Serializable {
         @TableField("advice_order")
         private int adviceOrder;
 
+        private LocalDateTime searchTime;
 
+        public LocalDateTime getSearchTime() {
+                return searchTime;
+        }
+
+        public void setSearchTime(LocalDateTime searchTime) {
+                this.searchTime = searchTime;
+        }
 
         public String getState() {
                 return state;
