@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -38,12 +39,12 @@ public class LocationEntitly implements Serializable {
     /**
      * 库位最大可存放
      */
-    @NotBlank(message="库位最大可存放量不能为空")
+    @NotNull(message="库位最大可存放量不能为空")
     private Integer locationMaxNum;
     /**
      * 库存数量
      */
-    @NotBlank(message="库存数量不能为空")
+    @NotNull(message="库存数量不能为空")
     private Integer locationTotal;
     /**
      * 更新时间

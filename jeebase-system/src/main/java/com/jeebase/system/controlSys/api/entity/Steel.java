@@ -18,16 +18,16 @@ public class Steel {
     private String steel_code;
     // 长
     @TableField(value = "length")
-    private int steel_length;
+    private String steel_length;
     // 宽
     @TableField(value = "width")
-    private int steel_width;
+    private String steel_width;
     // 高
     @TableField(value = "height")
-    private int steel_height;
+    private String steel_height;
     //重量
     @TableField(value = "weight")
-    private int steel_weight;
+    private String steel_weight;
 
     @TableField(exist = false)
     private List<Steel> steel_list;

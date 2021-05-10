@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -42,7 +43,7 @@ public class TaryEntitly implements Serializable {
     /**
      * 托盘使用次数
      */
-    @NotBlank(message="托盘使用次数不能为空")
+    @NotNull(message="托盘使用次数不能为空")
     private Integer taryNum;
 
     /**
@@ -76,6 +77,6 @@ public class TaryEntitly implements Serializable {
     /**
      * 使用阈值
      */
-    @NotBlank(message="阈值不能为空")
+    @NotNull(message="阈值不能为空")
     private Integer taryFixNum;
 }

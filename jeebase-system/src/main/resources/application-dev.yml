@@ -29,9 +29,9 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/jeebase?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://192.168.0.116/huzhou?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
-    password: 123456
+    password: root
     initialSize: 1
     minIdle: 3
     maxActive: 20
@@ -104,3 +104,8 @@ restTemplate:
   connectTimeout: 2000
   #读取超时默认30s
   readTimeout: 30000
+
+opcServer:
+  host: 192.168.0.108
+  user: OPCServer
+  password: 123456

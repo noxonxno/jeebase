@@ -3,8 +3,7 @@ package com.jeebase.system.controlSys.api;
 import com.jeebase.system.controlSys.api.entity.*;
 import com.jeebase.system.controlSys.api.service.WMSService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.jeebase.system.utils.HttpUtils;
 
 import java.text.SimpleDateFormat;
@@ -16,114 +15,105 @@ public class WMSApi {
     @Autowired
     private WMSService wmsService;
 
-    @RequestMapping("/SynSteelPlateInventoryBat")
-    public ResponseResult<List<String>> synSteelPlateInventoryBat(String request_uuid, String request_time, Steel request_data) {
-        if (request_uuid == null || request_time == null || request_data == null) {
+    @PostMapping("/SynSteelPlateInventoryBat")
+    public ResponseResult<List<String>> synSteelPlateInventoryBat(@RequestBody WMSApiSynSteelPlateInventoryBat data) {
+        if (data.getRequest_uuid() == null || data.getRequest_time() == null || data.getRequest_data() == null) {
             return Response.makeRsp(100, "参数不能为空");
         }
-        ArrayList<String> data = new ArrayList<>();
+        ArrayList<String> response_data = new ArrayList<>();
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         try {
-            List<Steel> plan_list = request_data.getSteel_list();
-            for (Steel steel : plan_list) {
+            Steel request_data = data.getRequest_data();
+            for (Steel steel : request_data.getSteel_list()) {
                 wmsService.save(steel);
             }
-            data.add(request_uuid);
-            data.add(formatter.format(date));
-            return Response.makeOKRsp(data);
+            response_data.add(data.getRequest_uuid());
+            response_data.add(formatter.format(date));
+            return Response.makeOKRsp(response_data);
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.makeErrRsp("同步仓库物料异常", data);
+            return Response.makeErrRsp("同步仓库物料异常", response_data);
         }
     }
 
     /**
-     * 同步库存接口
-     *
-     * @param request_uuid 随机生成32位UUID
-     * @param request_time 请求时间，格式参考约束
-     * @param request_data 请求业务参数
+     * @param data
      * @return
      */
     @RequestMapping("/SynSteelPlateInventory")
-    public ResponseResult<List<String>> synchronousInventory(String request_uuid, String request_time, Steel request_data) {
-        if (request_uuid == null || request_time == null || request_data == null) {
+    public ResponseResult<List<String>> synchronousInventory(@RequestBody WMSApiSynSteelPlateInventoryBat data) {
+        if (data.getRequest_uuid() == null || data.getRequest_time() == null || data.getRequest_data() == null) {
             return Response.makeRsp(100, "参数不能为空");
         }
-        ArrayList<String> data = new ArrayList<>();
+        ArrayList<String> response_data = new ArrayList<>();
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         try {
+            Steel request_data = data.getRequest_data();
             wmsService.save(request_data);
-            data.add(request_uuid);
-            data.add(formatter.format(date));
-            return Response.makeOKRsp(data);
+            response_data.add(data.getRequest_uuid());
+            response_data.add(formatter.format(date));
+            return Response.makeOKRsp(response_data);
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.makeErrRsp("同步仓库物料异常", data);
+            return Response.makeErrRsp("同步仓库物料异常", response_data);
         }
     }
 
     /**
      * 放板或抓取确认接口
      *
-     * @param request_uuid 随机生成32位UUID
-     * @param request_time 请求时间，格式参考约束
-     * @param request_data 请求业务参数
-     * @return
      */
     @RequestMapping("/confirmOperation")
-    public ResponseResult<List<String>> confirmOperation(String request_uuid, String request_time, String request_data) {
-        if (request_uuid.isEmpty() || request_time.isEmpty() || request_data.isEmpty()) {
+    public ResponseResult<List<String>> confirmOperation(@RequestBody WMSApiConfirmOperation data) {
+        if (data.getRequest_uuid() == null || data.getRequest_time() == null || data.getRequest_data() == null) {
             return Response.makeRsp(100, "参数不能为空");
         }
-        ArrayList<String> data = new ArrayList<>();
+        ArrayList<String> response_data = new ArrayList<>();
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         try {
-            data.add(request_uuid);
-            data.add(formatter.format(date));
-            data.add(request_uuid);
+            response_data.add(data.getRequest_uuid());
+            response_data.add(formatter.format(date));
+            Task task = data.getRequest_data();
+            String task_id = task.getTask_id();
             //TODO
-            return Response.makeRsp(1, "0", data);
+            return Response.makeRsp(1, "0", response_data);
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.makeErrRsp("确认出错", data);
+            return Response.makeErrRsp("确认出错", response_data);
         }
     }
 
     /**
      * 任务执行结果接口
      *
-     * @param request_uuid 随机生成32位UUID
-     * @param request_time 请求时间，格式参考约束
-     * @param request_data 请求业务参数
      * @return
      */
     @RequestMapping("/TaskResults")
-    public ResponseResult<List<String>> taskResults(String request_uuid, String request_time, WmsAtion request_data) {
-        if (request_uuid == null || request_time == null || request_data == null) {
+    public ResponseResult<List<String>> taskResults( @RequestBody WMSApiTaskResults data) {
+        if (data.getRequest_uuid() == null || data.getRequest_time() == null || data.getRequest_data() == null) {
             return Response.makeRsp(100, "参数不能为空");
         }
-        ArrayList<String> data = new ArrayList<>();
+        ArrayList<String> response_data = new ArrayList<>();
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        data.add(request_uuid);
-        data.add(formatter.format(date));
-        data.add(request_uuid);
         try {
-            wmsService.save(request_data);
+            WmsAtion wmsAtion_data = data.getRequest_data();
+            //TODO
+            response_data.add(data.getRequest_uuid());
+            response_data.add(formatter.format(date));
             return Response.makeOKRsp();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.makeErrRsp("保存执行异常", data);
+            return Response.makeErrRsp("保存执行异常", response_data);
         }
     }
 
     public String doWmsPlan(List<String> request_data) {
         String url = "";
-        String s="";
+        String s = "";
         Map<String, String> params = new HashMap<>();
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");

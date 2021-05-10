@@ -21,147 +21,82 @@ public class SortingApi {
 
 
     /**
-     * 分拣系统反馈任务解析结果给中控系统
+     * 中控系统接收套料图解析结果接口
      *
-     * @param request_code 随机生成32位UUID
-     * @param request_time 请求时间，格式参考约束
-     * @param request_data 请求业务参数
      * @return
      */
     @RequestMapping("/PlanAnalysisResults")
     @ResponseBody
-    public ResponseResult<List<String>> synSteelPlateInventoryBat(String request_code, String request_name, String request_time, @RequestBody FJPlanList request_data) {
-        if (request_code == null || request_time == null || request_data == null) {
+    public ResponseResult<List<String>> synSteelPlateInventoryBat(@RequestBody SortingApiPlanAnalysisResults data) {
+        if (data.getRequest_code() == null || data.getRequest_time() == null || data.getRequest_data() == null) {
             return Response.makeRsp(100, "参数不能为空");
         }
-        ArrayList<String> data = new ArrayList<>();
+        ArrayList<String> response_data = new ArrayList<>();
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
         try {
             //TODO
-            data.add(request_code);
-            data.add(formatter.format(date));
-            return Response.makeOKRsp(data);
+            response_data.add(data.getRequest_code());
+            response_data.add(formatter.format(response_data));
+            return Response.makeOKRsp(response_data);
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.makeErrRsp("接收计划解析校验结果异常", data);
+            return Response.makeErrRsp("接收计划解析校验结果异常", response_data);
         }
     }
 
-//    /**
-//     * 单零件喷码执行结果接口
-//     *
-//     * @param request_uuid 随机生成32位UUID
-//     * @param request_time 请求时间，格式参考b约束
-//     * @param request_data 请求业务参数
-//     * @return
-//     */
-//    @RequestMapping("/PartPrintExecutionResults")
-//    @ResponseBody
-//    public ResponseResult<List<String>> partPrintExecutionResults(String request_uuid, String request_time, @RequestBody String request_data) {
-//        if (request_uuid.isEmpty() || request_time.isEmpty() || request_data.isEmpty()) {
-//            return Response.makeRsp(100, "参数不能为空");
-//        }
-//        ArrayList<String> data = new ArrayList<>();
-//        Date date = new Date();
-//        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-//        try {
-////            Results results = JSON.parseObject(request_data, Results.class);
-////            sortingService.save(results);
-//            data.add(request_uuid);
-//            data.add(formatter.format(date));
-//            return Response.makeOKRsp(data);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return Response.makeErrRsp("保存单零件喷码执行结果异常", data);
-//        }
-//    }
+
 
     /**
-     * 接收打码完成反馈接口
+     * 中控系统接收打码完成反馈接口
      *
-     * @param request_code 随机生成32位UUID
-     * @param request_time 请求时间
-     * @param request_data 请求业务参数
+     * @param data 请求业务参数
      * @return
      */
     @RequestMapping("/PlanPrintExecutionResults")
     @ResponseBody
-    public ResponseResult<List<String>> planPrintExecutionResults(String request_code,String request_name, String request_time, @RequestBody PrintResults request_data) {
-        if (request_code == null || request_time == null || request_data == null) {
+    public ResponseResult<List<String>> planPrintExecutionResults(@RequestBody SortingApiPlanPrintExecutionResults data) {
+        if (data.getRequest_code() == null || data.getRequest_time() == null || data.getRequest_data() == null) {
             return Response.makeRsp(100, "参数不能为空");
         }
-        ArrayList<String> data = new ArrayList<>();
+        ArrayList<String> response_data = new ArrayList<>();
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         try {
+            PrintResults request_data = data.getRequest_data();
             //TODO
-            data.add(request_code);
-            data.add(formatter.format(date));
-            return Response.makeOKRsp(data);
+            response_data.add(data.getRequest_code());
+            response_data.add(formatter.format(date));
+            return Response.makeOKRsp(response_data);
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.makeErrRsp("喷码任务执行结果异常", data);
+            return Response.makeErrRsp("接受喷码任务执行结果异常", response_data);
         }
     }
 
-//    /**
-//     * 单零件分拣执行结果接口
-//     *
-//     * @param request_uuid 随机生成32位UUID
-//     * @param request_time 请求时间
-//     * @param request_data 请求业务参数
-//     * @return
-//     */
-//    @RequestMapping("/PartFJExecutionResults")
-//    @ResponseBody
-//    public ResponseResult<List<String>> partFJExecutionResults(String request_uuid, String request_time, @RequestBody String request_data) {
-//        if (request_uuid.isEmpty() || request_time.isEmpty() || request_data.isEmpty()) {
-//            return Response.makeRsp(100, "参数不能为空");
-//        }
-//        ArrayList<String> data = new ArrayList<>();
-//        Date date = new Date();
-//        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-//        data.add(request_uuid);
-//        try {
-//            PartFJResults partFJResults = JSON.parseObject(request_data, PartFJResults.class);
-////            sortingService.save(partFJResults);
-//            data.add(formatter.format(date));
-//            data.add(request_uuid);
-//            return Response.makeOKRsp(data);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return Response.makeErrRsp("同步仓库物料异常", data);
-//        }
-//    }
-
     /**
-     * 分拣任务执行结果接口
+     * 中控系统接收分拣完成反馈接口
      *
-     * @param request_code 随机生成32位UUID
-     * @param request_time 请求时间
-     * @param request_data 请求业务参数
+     * @param data 请求业务参数
      * @return
      */
     @RequestMapping("/PlanFJExecutionResults")
     @ResponseBody
-    public ResponseResult<List<String>> planFJExecutionResults(String request_code, String request_time, @RequestBody String request_data) {
-        if (request_code == null || request_time == null || request_data == null) {
+    public ResponseResult<List<String>> planFJExecutionResults(@RequestBody SortingApiPlanFJExecutionResults data) {
+        if (data.getRequest_code() == null || data.getRequest_time() == null || data.getRequest_data() == null) {
             return Response.makeRsp(100, "参数不能为空");
         }
-        ArrayList<String> data = new ArrayList<>();
+        ArrayList<String> response_data = new ArrayList<>();
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         try {
-            PlanFJResults planFJResults = JSON.parseObject(request_data, PlanFJResults.class);
-//            sortingService.save(planFJResults);
-            data.add(formatter.format(date));
-            data.add(request_code);
-            return Response.makeOKRsp(data);
+            response_data.add(formatter.format(date));
+            response_data.add(data.getRequest_code());
+            return Response.makeOKRsp(response_data);
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.makeErrRsp("同步仓库物料异常", data);
+            return Response.makeErrRsp("接受分拣任务执行结果异常", response_data);
         }
     }
 
