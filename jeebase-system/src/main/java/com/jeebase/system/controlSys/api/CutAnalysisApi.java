@@ -3,6 +3,8 @@ package com.jeebase.system.controlSys.api;
 import com.alibaba.fastjson.JSON;
 import com.jeebase.system.controlSys.api.entity.*;
 import com.jeebase.system.controlSys.api.service.CutAnalysisService;
+import com.jeebase.system.controlSys.taskManage.entity.CutTaskEntity;
+import com.jeebase.system.controlSys.taskManage.service.ICutTaskService;
 import com.jeebase.system.utils.HttpUtils;
 import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,9 @@ import java.util.*;
 @RequestMapping("/base_url")
 public class CutAnalysisApi {
     @Autowired
-    private CutAnalysisService cutAnalysisservice;
+    private ICutTaskService cutTaskService;
+    @Autowired
+    private CutAnalysisService cutAnalysisService;
 
     /**
      * 保存接收计划解析校验结果
@@ -35,7 +39,11 @@ public class CutAnalysisApi {
         try {
             CutTask request_data = data.getRequest_data();
             for (CutTask cutTask : request_data.getPlan_list()) {
-                cutAnalysisservice.save(cutTask);
+                CutTaskEntity cutTaskEntity = new CutTaskEntity();
+                cutTaskEntity.setPlanCode(cutTask.getPlan_code());
+                cutTaskEntity.setSlicingFileType(cutTask.getCutfile_code());
+                cutTaskEntity.setCutTime(cutTask.getCut_time());
+                cutTaskService.save(cutTaskEntity);
             }
             response_data.add(data.getRequest_uuid());
             response_data.add(formatter.format(date));
@@ -102,7 +110,7 @@ public class CutAnalysisApi {
     public void analyzeVerifyCuttPlan(String request_data){
         String url = "";
         Map<String,String> params = new HashMap<>();
-        List<CutTask> catPlanLists = cutAnalysisservice.selcetCatfileList();
+        List<CutTask> catPlanLists = cutAnalysisService.selcetCatfileList();
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         for (CutTask catPlanList : catPlanLists) {
@@ -115,7 +123,7 @@ public class CutAnalysisApi {
     public void doCutPlan(String request_data){
         String url = "";
         Map<String,String> params = new HashMap<>();
-        List<CutTask> catPlanList = cutAnalysisservice.selcetCatfileList();
+        List<CutTask> catPlanList = cutAnalysisService.selcetCatfileList();
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         for (CutTask catPlan : catPlanList) {

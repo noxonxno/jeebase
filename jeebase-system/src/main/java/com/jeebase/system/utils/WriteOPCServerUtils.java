@@ -43,10 +43,10 @@ public class WriteOPCServerUtils {
             final JIVariant value = new JIVariant(writeValue);
             try {
                 item.write(value);
-                map.put("成功写入数据：",writeValue);
+                map.put(writeValue,"success");
             } catch (JIException e) {
                 e.printStackTrace();
-                map.put("写入数据出错：",writeValue);
+                map.put(writeValue,"error");
             }
             return map;
         } catch (final JIException e) {

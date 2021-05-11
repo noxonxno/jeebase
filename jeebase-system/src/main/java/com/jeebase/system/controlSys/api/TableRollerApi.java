@@ -3,13 +3,11 @@ package com.jeebase.system.controlSys.api;
 
 import com.jeebase.system.utils.ReadOPCServerUtils;
 import com.jeebase.system.utils.WriteOPCServerUtils;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
-
 
 @Component
 public class TableRollerApi {
