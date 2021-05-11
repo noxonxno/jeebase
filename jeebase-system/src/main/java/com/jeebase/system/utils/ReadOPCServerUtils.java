@@ -51,7 +51,7 @@ public class ReadOPCServerUtils {
                     System.out.println("监控项的数据类型是：-----" + type);
                     System.out.println("监控项的时间戳是：-----" + itemState.getTimestamp().getTime());
                     System.out.println("监控项的详细信息是：-----" + itemState);
-                    map.put("监控项的详细信息是", itemState.toString());
+                    map.put("detail", itemState.toString());
 
                     // 如果读到是short类型的值
                     if (type == JIVariant.VT_I2) {
@@ -62,7 +62,7 @@ public class ReadOPCServerUtils {
                             e.printStackTrace();
                         }
                         System.out.println("-----short类型值： " + n);
-                        map.put("监控项的详细信息是", String.valueOf(n));
+                        map.put("value", String.valueOf(n));
                     }
                     // 如果读到是字符串类型的值
                     if (type == JIVariant.VT_BSTR) { // 字符串的类型是8
@@ -70,6 +70,7 @@ public class ReadOPCServerUtils {
                             JIString value = itemState.getValue().getObjectAsString();
                             String str = value.getString(); // 得到字符串
                             System.out.println("-----String类型值： " + str);
+                            map.put("value", String.valueOf(value));
                         } catch (JIException e) {
                             e.printStackTrace();
                         } // 按字符串读取
@@ -84,10 +85,9 @@ public class ReadOPCServerUtils {
                         } catch (JIException e) {
                             e.printStackTrace();
                         }
-                        System.out.println(value);
 //                            String str = value.getString(); // 得到字符串
                         System.out.println("-----String类型值： " + value);
-                        map.put("监控项的详细信息是", String.valueOf(value));
+                        map.put("value", String.valueOf(value));
                     }
                 }
             });

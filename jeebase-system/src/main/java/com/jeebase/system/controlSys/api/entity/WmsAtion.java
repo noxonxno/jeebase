@@ -2,6 +2,8 @@ package com.jeebase.system.controlSys.api.entity;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class WmsAtion {
     //任务ID（唯一）
@@ -20,9 +22,9 @@ public class WmsAtion {
     private String fail_msg;
 
     //任务开始时间
-    private String task_sTime;
+    private LocalDateTime task_sTime;
 
     //任务结束时间
-    private String task_eTime;
+    private LocalDateTime task_eTime;
 }
 

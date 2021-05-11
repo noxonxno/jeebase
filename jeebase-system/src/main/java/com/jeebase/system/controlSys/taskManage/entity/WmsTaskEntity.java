@@ -45,6 +45,9 @@ public class WmsTaskEntity implements Serializable {
     @TableField("end_time")
     private LocalDateTime endTime;
 
+    @TableField("task_tpye")
+    private String taskTpye;
+
     private String exeModel;
 
     public String getExeModel() {
@@ -134,4 +137,13 @@ public class WmsTaskEntity implements Serializable {
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
+
+    public void setTaskTpye(String taskTpye) {
+        this.taskTpye = taskTpye;
+    }
+
+    public String getTaskTpye() {
+        return taskTpye;
+    }
+
 }
