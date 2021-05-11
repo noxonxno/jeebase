@@ -25,7 +25,7 @@ public class FjActionController {
      * @param
      * @return
      */
-    @PostMapping("/list")
+    @GetMapping("/list")
     @RequiresRoles("SYSADMIN")
     @ApiOperation(value = "查询分拣报工", notes = "查询分拣报工")
     @ApiImplicitParam(paramType = "query", name = "fjActionEntity", value = "分拣报工对象", required = false, dataType = "FjActionEntity")

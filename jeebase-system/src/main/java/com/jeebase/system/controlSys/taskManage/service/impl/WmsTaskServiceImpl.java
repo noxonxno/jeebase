@@ -14,6 +14,7 @@ import com.jeebase.system.controlSys.reportAction.mapper.IWmsActionMapper;
 import com.jeebase.system.controlSys.taskManage.entity.CutTaskEntity;
 import com.jeebase.system.controlSys.taskManage.entity.WmsTaskEntity;
 import com.jeebase.system.controlSys.taskManage.mapper.IWmsTaskMapper;
+import com.jeebase.system.controlSys.taskManage.service.IFjTaskService;
 import com.jeebase.system.controlSys.taskManage.service.IWmsTaskService;
 import com.jeebase.system.utils.UUIDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class WmsTaskServiceImpl extends ServiceImpl<IWmsTaskMapper, WmsTaskEntit
     @Autowired
     private IWmsActionMapper wmsActionMapper;
 
+    @Autowired
+    private IFjTaskService fjTaskService;
+
     @Override
     public Page<WmsTaskEntity> selectList(Page<WmsTaskEntity> page, WmsTaskEntity wmsTaskEntity) {
 
@@ -48,98 +52,161 @@ public class WmsTaskServiceImpl extends ServiceImpl<IWmsTaskMapper, WmsTaskEntit
 
     @Override
     @Transactional
-    public boolean doTask(String wmsTaskId, String planCode) throws BusinessException {
-        //调用api开始任务执行
-        //cutAnalysisApi.doCutPlan("");
+    public boolean doTask(String planCode,String isAuto) throws BusinessException {
+
+
+        //确认辊道状态托盘就位信号
+
+        //写入g_plan
+
+        //调用api开始上料任务
+        //wmsAnalysisApi.doCutPlan("");
+
+
+        MesDoPlanEntity doPlanEntity = mesDoPlanMapper.selectById(planCode);
+        if (doPlanEntity == null){
+            throw new BusinessException("不存在所属mes可执行计划");
+        }
+
+        //判断当前任务执行环节上料or下料
+        if (doPlanEntity.getTaskType() == 0){
+            //执行上料任务
+            //cutAnalysisApi.doCutPlan("");
+
+
+        }else {//执行下料任务
+
+        }
+
+
+        //更改mes可执行任务状态
+        MesDoPlanEntity mesDoPlanEntity = new MesDoPlanEntity();
+        mesDoPlanEntity.setId(planCode);
+        mesDoPlanEntity.setTaskType(doPlanEntity.getTaskType()+1);
+        mesDoPlanEntity.setUpdateTime(LocalDateTime.now());
+        mesDoPlanEntity.setExeModel(isAuto);
+        mesDoPlanMapper.updateById(mesDoPlanEntity);//更新mes可执行计划
+
 
         //创建初始报工记录，并入库
         WmsActionEntity wmsActionEntity = new WmsActionEntity();
         wmsActionEntity.setId(UUIDUtils.getUUID32());
         wmsActionEntity.setPlanCode(planCode);
         //设置指令发送时间
-        LocalDateTime now = LocalDateTime.now();
-        wmsActionEntity.setSendTime(now);
-        //设置动作名称
-        //设置指令接口
+        wmsActionEntity.setSendTime(LocalDateTime.now());
+
         //报工入库
         if (wmsActionMapper.insert(wmsActionEntity) <=0 ){
             throw new BusinessException("添加报工失败");
         }
 
-        //更改mes可执行任务状态
-        MesDoPlanEntity mesDoPlanEntity = new MesDoPlanEntity();
-        mesDoPlanEntity.setId(planCode);
-        mesDoPlanEntity.setExeModel("manual");
-        mesDoPlanEntity.setPlanState("2");
-        mesDoPlanEntity.setUpdateTime(LocalDateTime.now());
-        if (mesDoPlanMapper.selectById(planCode) == null){
-            throw  new BusinessException("不存在所属mes可执行计划");
-        }
-        mesDoPlanMapper.updateById(mesDoPlanEntity);//更新mes可执行计划
-
-
         //更改任务执行状态
         WmsTaskEntity wmsTaskEntity = new WmsTaskEntity();
-        wmsTaskEntity.setId(wmsTaskId);
-        wmsTaskEntity.setFplanState("3");
-        if (wmsTaskMapper.selectById(wmsTaskId) == null){
+        wmsTaskEntity.setFplanState("4");//任务状态0取消，1成功，2失败，3未开始，4执行中
+
+
+        LambdaQueryWrapper<WmsTaskEntity> lambda = new QueryWrapper<WmsTaskEntity>().lambda();
+        lambda.eq(WmsTaskEntity::getPlanCode,planCode).eq(WmsTaskEntity::getFplanType,"1");
+        WmsTaskEntity taskEntity = wmsTaskMapper.selectOne(lambda);
+        if (taskEntity == null){
             throw  new BusinessException("不存在任务id");
         }
+        wmsTaskEntity.setId(taskEntity.getId());
         wmsTaskMapper.updateById(wmsTaskEntity);
         return true;
     }
 
+    /**
+     * wms任务执行结果回调
+     * @param taskEntity
+     * @return
+     */
     @Override
     @Transactional
     public boolean doTaskCallBack(WmsTaskEntity taskEntity){
+
+        //返回条件参数
         String planCode = taskEntity.getPlanCode();
         if (StringUtils.isEmpty(planCode)){
             throw new BusinessException("无主计划编号，请检查接口数据");
         }
 
-        //更新mes可执行计划信息
-        if (mesDoPlanMapper.selectById(planCode) == null){
+        //判断是否有mes可执行计划信息
+        MesDoPlanEntity doPlanEntity = mesDoPlanMapper.selectById(planCode);
+        if (doPlanEntity == null){
             throw  new BusinessException("不存在所属mes可执行计划");
         }
-        MesDoPlanEntity mesDoPlanEntity = new MesDoPlanEntity();
-        mesDoPlanEntity.setId(planCode);
-        mesDoPlanEntity.setPlanState("2");
-        mesDoPlanEntity.setUpdateTime(LocalDateTime.now());
-        mesDoPlanMapper.updateById(mesDoPlanEntity);//更新mes可执行计划
 
-
-        //更新报工信息
-        //根据计划编号获取报工对象
+        //判断是否有对应报工数据
         LambdaQueryWrapper<WmsActionEntity> lambda = new QueryWrapper<WmsActionEntity>().lambda()
                 .eq(WmsActionEntity::getPlanCode,planCode)
                 .orderByAsc(WmsActionEntity::getSendTime);
         List<WmsActionEntity> wmsActionEntities = wmsActionMapper.selectList(lambda);
-
         if (wmsActionEntities.size() >= 0){
             throw new BusinessException("不存在对应报工数据");
         }
-        WmsActionEntity wmsActionEntity = wmsActionEntities.get(0);
-        //设置更新参数
-        wmsActionEntity.setReportTime(LocalDateTime.now());
-        //执行报工更新
-        wmsActionMapper.update(wmsActionEntity,lambda);
 
-
-        //更新task信息
+        //判断是否有task信息
         LambdaQueryWrapper<WmsTaskEntity> lambda1 = new QueryWrapper<WmsTaskEntity>().lambda()
-                .eq(WmsTaskEntity::getPlanCode,planCode);
+                .eq(WmsTaskEntity::getPlanCode,planCode)
+                .eq(WmsTaskEntity::getFplanType,taskEntity.getFplanType());
         WmsTaskEntity wmsTaskEntity = wmsTaskMapper.selectOne(lambda1);
         if (wmsTaskEntity == null){
             throw new BusinessException("不存在对应任务数据");
         }
-        //设置更新参数
+
+        //构建可执行计划更新数据
+        MesDoPlanEntity mesDoPlanEntity = new MesDoPlanEntity();
+        mesDoPlanEntity.setId(planCode);
+        mesDoPlanEntity.setUpdateTime(LocalDateTime.now());
+
+
+        //创建报工更新数据
+        WmsActionEntity wmsActionEntity = wmsActionEntities.get(0);
+        wmsActionEntity.setReportTime(LocalDateTime.now());
+        wmsActionEntity.setReportLog("");
+
+        wmsActionEntity.setSendTime(null);
+        wmsActionEntity.setPlanCode(null);
+        wmsActionEntity.setActionName(null);
+        wmsActionEntity.setSendLog(null);
+
+        //创建任务对象更新数据
+        taskEntity.setId(wmsTaskEntity.getId());
         taskEntity.setEndTime(LocalDateTime.now());
+
+
+        //当前任务失败对应或成功更新数据
+        if ("2".equals(taskEntity.getFplanState())){
+            mesDoPlanEntity.setPlanState("2");//可执行计划状态设置失败
+            taskEntity.setFplanState("2");//任务状态设置为失败
+            wmsActionEntity.setResult("失败");//报工结果设置为失败
+        }else {
+            wmsActionEntity.setResult("成功");
+            mesDoPlanEntity.setTaskType(doPlanEntity.getTaskType()+1);//任务环节加一
+        }
+
+
+        //执行mes可执行计划更新
+        mesDoPlanMapper.updateById(mesDoPlanEntity);
+        //执行报工更新
+        wmsActionMapper.updateById(wmsActionEntity);
         //执行任务更新
-        wmsTaskMapper.update(taskEntity,lambda1);
+        wmsTaskMapper.updateById(taskEntity);
 
-        //判断是否自动任务，若为自动则调用下一步操作
-        if("auto".equals(wmsTaskEntity.getExeModel())){
 
+        //判断是否自动任务，若为自动则调用下一步操作//根据当前任务上料或者下料，以及主任务执行环节来判断下一步执行步骤
+        if("auto".equals(wmsTaskEntity.getExeModel()) && "2".equals(taskEntity.getFplanState())){
+                doNext(doPlanEntity,taskEntity);
+        }
+        return true;
+    }
+
+
+    public boolean doNext(MesDoPlanEntity doPlanEntity,WmsTaskEntity wmsTaskEntity){
+        if (doPlanEntity.getTaskType() == 2 && "1".equals(wmsTaskEntity.getFplanType())){
+            //执行喷码操作
+            fjTaskService.doTask("",doPlanEntity.getPlanCode());
         }
         return true;
     }

@@ -118,44 +118,42 @@ public class MesDoPlanServiceImpl  extends ServiceImpl<IMesDoPlanMapper, MesDoPl
     @Override
     @Transactional
     public boolean doAutoTask(String planCode) throws BusinessException {
-        //调用api开始任务执行
-        //wmsAnalysisApi.doCutPlan("");
-
-        //创建初始报工记录，并入库
-        WmsActionEntity wmsActionEntity = new WmsActionEntity();
-        wmsActionEntity.setId(UUIDUtils.getUUID32());
-        //设置指令发送时间
-        LocalDateTime now = LocalDateTime.now();
-        wmsActionEntity.setSendTime(now);
-        //设置动作名称
-        //设置指令接口
-        //报工入库
-        if (wmsActionMapper.insert(wmsActionEntity) <=0 ){
-            throw new BusinessException("添加报工失败");
-        }
-
-        //更改mes可执行任务状态
-        if (mesDoPlanMapper.selectById(planCode) == null){
-            throw  new BusinessException("不存在所属mes可执行计划");
-        }
-        MesDoPlanEntity mesDoPlanEntity = new MesDoPlanEntity();
-        mesDoPlanEntity.setId(planCode);
-        mesDoPlanEntity.setPlanState("1");
-        mesDoPlanEntity.setExeModel("auto");
-        mesDoPlanEntity.setUpdateTime(now);
-        mesDoPlanMapper.updateById(mesDoPlanEntity);//更新mes可执行计划
 
 
-        //更改wms任务执行状态
-        LambdaQueryWrapper<WmsTaskEntity> lambda = new QueryWrapper<WmsTaskEntity>().lambda();
-        lambda.eq(WmsTaskEntity::getPlanCode,planCode);
-        WmsTaskEntity wmsTaskEntity = wmsTaskMapper.selectOne(lambda);
-        if (wmsTaskEntity == null){
-            throw  new BusinessException("不存在任务id");
-        }
-        wmsTaskEntity.setStartTime(now);
-        wmsTaskEntity.setFplanState("1");
-        wmsTaskMapper.updateById(wmsTaskEntity);
+
+//        //创建初始报工记录，并入库
+//        WmsActionEntity wmsActionEntity = new WmsActionEntity();
+//        wmsActionEntity.setId(UUIDUtils.getUUID32());
+//        //设置指令发送时间
+//        LocalDateTime now = LocalDateTime.now();
+//        wmsActionEntity.setSendTime(now);
+//        //设置动作名称
+//        //设置指令接口
+//        //报工入库
+//        if (wmsActionMapper.insert(wmsActionEntity) <=0 ){
+//            throw new BusinessException("添加报工失败");
+//        }
+//
+//        //更改mes可执行任务状态
+//        if (mesDoPlanMapper.selectById(planCode) == null){
+//            throw  new BusinessException("不存在所属mes可执行计划");
+//        }
+//        MesDoPlanEntity mesDoPlanEntity = new MesDoPlanEntity();
+//        mesDoPlanEntity.setPlanState("1");
+//        mesDoPlanEntity.setExeModel("auto");
+//        mesDoPlanEntity.setUpdateTime(now);
+//        mesDoPlanMapper.updateById(mesDoPlanEntity);//更新mes可执行计划
+//
+//        //更改wms喷码任务执行状态
+//        LambdaQueryWrapper<WmsTaskEntity> lambda = new QueryWrapper<WmsTaskEntity>().lambda();
+//        lambda.eq(WmsTaskEntity::getPlanCode,planCode).eq(WmsTaskEntity::getFplanType,"pm");
+//        WmsTaskEntity wmsTaskEntity = wmsTaskMapper.selectOne(lambda);
+//        if (wmsTaskEntity == null){
+//            throw  new BusinessException("不存在任务id");
+//        }
+//        wmsTaskEntity.setExeModel("auto");
+//        wmsTaskEntity.setFplanState("1");
+//        wmsTaskMapper.updateById(wmsTaskEntity);
         return true;
     }
 }

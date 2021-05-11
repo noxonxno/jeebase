@@ -11,7 +11,7 @@ public interface IWmsTaskService extends IService<WmsTaskEntity> {
     Page<WmsTaskEntity> selectList(Page<WmsTaskEntity> page, WmsTaskEntity wmsTaskEntity);
 
     @Transactional
-    boolean doTask(String wmsTaskId, String planCode) throws BusinessException;
+    boolean doTask(String planCode,String isAuto) throws BusinessException;
 
     @Transactional
     boolean doTaskCallBack(WmsTaskEntity wmsTaskEntity);

@@ -44,7 +44,7 @@ public class ReadOPCServerUtils {
                 public void changed(Item item, ItemState itemState) {
                     int type = 0;
                     try {
-                        type = itemState.getValue().getType(); // 类型实际是数字，用常量定义的
+                        type = itemState.getValue().getType();
                     } catch (JIException e) {
                         e.printStackTrace();
                     }

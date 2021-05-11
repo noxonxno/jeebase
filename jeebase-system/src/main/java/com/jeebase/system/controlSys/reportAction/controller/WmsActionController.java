@@ -25,7 +25,7 @@ public class WmsActionController {
      * @param
      * @return
      */
-    @PostMapping("/list")
+    @GetMapping("/list")
     @RequiresRoles("SYSADMIN")
     @ApiOperation(value = "查询上下料报工", notes = "查询上下料报工")
     @ApiImplicitParam(paramType = "query", name = "WmsActionEntity", value = "上下料报工对象", required = false, dataType = "WmsActionEntity")

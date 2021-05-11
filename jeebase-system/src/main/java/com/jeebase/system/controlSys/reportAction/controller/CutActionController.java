@@ -25,7 +25,7 @@ public class CutActionController {
      * @param
      * @return
      */
-    @PostMapping("/list")
+    @GetMapping("/list")
     @RequiresRoles("SYSADMIN")
     @ApiOperation(value = "查询切割报工", notes = "查询切割报工")
     @ApiImplicitParam(paramType = "query", name = "CutActionEntity", value = "切割报工对象", required = false, dataType = "CutActionEntity")

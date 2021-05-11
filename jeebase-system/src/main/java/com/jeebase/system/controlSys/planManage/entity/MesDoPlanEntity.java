@@ -19,10 +19,10 @@ public class MesDoPlanEntity implements Serializable {
     @TableField("plan_code")
     private String planCode;
 
-    @TableField("task_type")
-    private String taskType;
+    @TableField("task_type")//任务环节
+    private int taskType;
 
-    private String planState;
+    private String planState;//0取消，1成功，2失败，3未开始，4执行中
 
     @TableField("place")
     private String place;
@@ -47,7 +47,6 @@ public class MesDoPlanEntity implements Serializable {
 
     @TableField("update_time")
     private LocalDateTime updateTime;
-
 
     @TableField("tray_id")
     private String tray_id;
@@ -126,11 +125,11 @@ public class MesDoPlanEntity implements Serializable {
         return planCode;
     }
 
-    public String getTaskType() {
+    public int getTaskType() {
         return taskType;
     }
 
-    public void setTaskType(String taskType) {
+    public void setTaskType(int taskType) {
         this.taskType = taskType;
     }
 
