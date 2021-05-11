@@ -34,9 +34,7 @@ public class WmsTaskEntity implements Serializable {
     private String locationCode;
 
     @TableField("fplan_state")
-    private String fplanState;//任务状态0取消，1成功，2失败，3未开始，4执行中
-
-    private String fplanType;
+    private String fplanState;
 
     @TableField("create_time")
     private LocalDateTime createTime;
@@ -49,15 +47,10 @@ public class WmsTaskEntity implements Serializable {
 
     private String errInfo;
 
+    @TableField("task_tpye")
+    private String taskTpye;
+
     private String exeModel;
-
-    public String getFplanType() {
-        return fplanType;
-    }
-
-    public void setFplanType(String fplanType) {
-        this.fplanType = fplanType;
-    }
 
     public String getExeModel() {
         return exeModel;
@@ -146,4 +139,13 @@ public class WmsTaskEntity implements Serializable {
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
+
+    public void setTaskTpye(String taskTpye) {
+        this.taskTpye = taskTpye;
+    }
+
+    public String getTaskTpye() {
+        return taskTpye;
+    }
+
 }

@@ -1,7 +1,12 @@
 package com.jeebase.system.controlSys.api;
 
+import com.jeebase.common.base.BusinessException;
 import com.jeebase.system.controlSys.api.entity.*;
 import com.jeebase.system.controlSys.api.service.WMSService;
+import com.jeebase.system.controlSys.taskManage.entity.WmsTaskEntity;
+import com.jeebase.system.controlSys.taskManage.service.IWmsTaskService;
+import com.jeebase.system.controlSys.taskManage.service.impl.WmsTaskServiceImpl;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jeebase.system.utils.HttpUtils;
@@ -14,6 +19,8 @@ import java.util.*;
 public class WMSApi {
     @Autowired
     private WMSService wmsService;
+    @Autowired
+    private IWmsTaskService wmsTaskService;
 
     @PostMapping("/SynSteelPlateInventoryBat")
     public ResponseResult<List<String>> synSteelPlateInventoryBat(@RequestBody WMSApiSynSteelPlateInventoryBat data) {
@@ -31,7 +38,7 @@ public class WMSApi {
             response_data.add(data.getRequest_uuid());
             response_data.add(formatter.format(date));
             return Response.makeOKRsp(response_data);
-        } catch (Exception e) {
+        } catch (BusinessException e) {
             e.printStackTrace();
             return Response.makeErrRsp("同步仓库物料异常", response_data);
         }
@@ -55,7 +62,7 @@ public class WMSApi {
             response_data.add(data.getRequest_uuid());
             response_data.add(formatter.format(date));
             return Response.makeOKRsp(response_data);
-        } catch (Exception e) {
+        } catch (BusinessException e) {
             e.printStackTrace();
             return Response.makeErrRsp("同步仓库物料异常", response_data);
         }
@@ -63,7 +70,6 @@ public class WMSApi {
 
     /**
      * 放板或抓取确认接口
-     *
      */
     @RequestMapping("/confirmOperation")
     public ResponseResult<List<String>> confirmOperation(@RequestBody WMSApiConfirmOperation data) {
@@ -76,11 +82,8 @@ public class WMSApi {
         try {
             response_data.add(data.getRequest_uuid());
             response_data.add(formatter.format(date));
-            Task task = data.getRequest_data();
-            String task_id = task.getTask_id();
-            //TODO
             return Response.makeRsp(1, "0", response_data);
-        } catch (Exception e) {
+        } catch (BusinessException e) {
             e.printStackTrace();
             return Response.makeErrRsp("确认出错", response_data);
         }
@@ -92,7 +95,7 @@ public class WMSApi {
      * @return
      */
     @RequestMapping("/TaskResults")
-    public ResponseResult<List<String>> taskResults( @RequestBody WMSApiTaskResults data) {
+    public ResponseResult<List<String>> taskResults(@RequestBody WMSApiTaskResults data) {
         if (data.getRequest_uuid() == null || data.getRequest_time() == null || data.getRequest_data() == null) {
             return Response.makeRsp(100, "参数不能为空");
         }
@@ -101,11 +104,18 @@ public class WMSApi {
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         try {
             WmsAtion wmsAtion_data = data.getRequest_data();
-            //TODO
+            WmsTaskEntity wmsTaskEntity = new WmsTaskEntity();
+            wmsTaskEntity.setId(wmsAtion_data.getTask_id());
+            wmsTaskEntity.setPlanCode(wmsAtion_data.getPlan_code());
+            wmsTaskEntity.setTaskTpye(wmsAtion_data.getTask_tpye());
+            wmsTaskEntity.setFplanState(wmsAtion_data.getTask_status());
+            wmsTaskEntity.setCreateTime(wmsAtion_data.getTask_sTime());
+            wmsTaskEntity.setEndTime(wmsAtion_data.getTask_eTime());
+            wmsTaskService.doTaskCallBack(wmsTaskEntity);
             response_data.add(data.getRequest_uuid());
             response_data.add(formatter.format(date));
             return Response.makeOKRsp();
-        } catch (Exception e) {
+        } catch (BusinessException e) {
             e.printStackTrace();
             return Response.makeErrRsp("保存执行异常", response_data);
         }
