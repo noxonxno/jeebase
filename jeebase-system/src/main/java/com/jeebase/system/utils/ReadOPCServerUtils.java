@@ -62,7 +62,7 @@ public class ReadOPCServerUtils {
                             e.printStackTrace();
                         }
                         System.out.println("-----short类型值： " + n);
-                        map.put("value", String.valueOf(n));
+                        map.put("pointsValue", String.valueOf(n));
                     }
                     // 如果读到是字符串类型的值
                     if (type == JIVariant.VT_BSTR) { // 字符串的类型是8
@@ -70,7 +70,7 @@ public class ReadOPCServerUtils {
                             JIString value = itemState.getValue().getObjectAsString();
                             String str = value.getString(); // 得到字符串
                             System.out.println("-----String类型值： " + str);
-                            map.put("value", String.valueOf(value));
+                            map.put("pointsValue", String.valueOf(value));
                         } catch (JIException e) {
                             e.printStackTrace();
                         } // 按字符串读取
@@ -87,7 +87,7 @@ public class ReadOPCServerUtils {
                         }
 //                            String str = value.getString(); // 得到字符串
                         System.out.println("-----String类型值： " + value);
-                        map.put("value", String.valueOf(value));
+                        map.put("pointsValue", String.valueOf(value));
                     }
                 }
             });

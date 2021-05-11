@@ -14,6 +14,8 @@ public class CutTask {
     private String ctask_id;
 //    主计划编码
     private String plan_code;
+    //切割文件编号
+    private String cutfile_code;
 //    切割文件地址
     private String cuf_url;
 //    切割工位编号
