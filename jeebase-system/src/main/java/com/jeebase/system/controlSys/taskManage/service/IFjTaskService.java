@@ -12,7 +12,7 @@ public interface IFjTaskService extends IService<FjTaskEntity> {
     Page<FjTaskEntity> selectList(Page<FjTaskEntity> page,FjTaskEntity fjTaskEntity);
 
     @Transactional
-    boolean doTask(String fjTaskId, String planCode) throws BusinessException;
+    boolean doTask(String planCode) throws BusinessException;
 
     @Transactional
     boolean doTaskCallBack(FjTaskEntity taskEntity);

@@ -4,20 +4,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jeebase.common.annotation.log.AroundLog;
 import com.jeebase.common.base.PageResult;
 import com.jeebase.common.base.Result;
-import com.jeebase.system.controlSys.api.SortingApi;
-import com.jeebase.system.controlSys.reportAction.entity.FjActionEntity;
+import com.jeebase.system.controlSys.api.FjApi;
 import com.jeebase.system.controlSys.reportAction.service.IFjActionService;
 import com.jeebase.system.controlSys.taskManage.entity.FjTaskEntity;
 import com.jeebase.system.controlSys.taskManage.service.IFjTaskService;
-import com.jeebase.system.utils.UUIDUtils;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 
 @RestController
@@ -31,7 +26,7 @@ public class FjTaskController {
     private IFjActionService fjActionService;
 
     @Autowired
-    private SortingApi sortingApi;
+    private FjApi fjApi;
 
     /**
      * 按条件查询列表
@@ -112,7 +107,7 @@ public class FjTaskController {
     public Result<?> doTask(@PathVariable("fjTaskId") String fjTaskId,@PathVariable("fjState") String fjState){
 
         try {
-            if (fjTaskService.doTask(fjTaskId, fjState)){
+            if (fjTaskService.doTask(fjState)){
                 return new Result<>().success();
             }
         }catch (Exception e){

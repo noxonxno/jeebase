@@ -15,7 +15,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/base_url")
-public class SortingApi {
+public class FjApi {
     @Autowired
     private SortingService sortingService;
 
@@ -45,7 +45,6 @@ public class SortingApi {
             return Response.makeErrRsp("接收计划解析校验结果异常", response_data);
         }
     }
-
 
 
     /**

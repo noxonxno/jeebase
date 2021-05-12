@@ -10,7 +10,7 @@ public interface ICutTaskService extends IService<CutTaskEntity> {
 
     Page<CutTaskEntity> selectList(Page<CutTaskEntity> page, CutTaskEntity cutTaskEntity);
 
-    boolean doTask(String cutTaskId, String planCode) throws BusinessException;
+    boolean doTask(String planCode) throws BusinessException;
 
     @Transactional
     boolean doTaskCallBack(CutTaskEntity taskEntity);

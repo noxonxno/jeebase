@@ -97,21 +97,21 @@ public class MesDoPalnController {
     /**
      * 执行自动模式计划
      */
-    @PostMapping("/do/{planCode}")
-    @RequiresRoles("SYSADMIN")
-    @ApiOperation(value = "执行上下料任务")
-    @AroundLog(name = "执行上下料任务")
-    @ApiImplicitParam(paramType = "path", name = "planCode", value = "通知id", required = true, dataType = "String")
-    public Result<?> doTask(@PathVariable("planCode") String planCode){
-
-        try {
-            if (mesDoPlanService.doAutoTask(planCode)){
-                return new Result<>().success();
-            }
-        }catch (BusinessException e){
-            return new Result<>().error(e.getMessage());
-        }
-        return new Result<>().error("执行失败，请联系开发人员");
-    }
+//    @PostMapping("/do/{planCode}")
+//    @RequiresRoles("SYSADMIN")
+//    @ApiOperation(value = "执行上下料任务")
+//    @AroundLog(name = "执行上下料任务")
+//    @ApiImplicitParam(paramType = "path", name = "planCode", value = "通知id", required = true, dataType = "String")
+//    public Result<?> doTask(@PathVariable("planCode") String planCode){
+//
+//        try {
+//            if (mesDoPlanService.doAutoTask(planCode)){
+//                return new Result<>().success();
+//            }
+//        }catch (BusinessException e){
+//            return new Result<>().error(e.getMessage());
+//        }
+//        return new Result<>().error("执行失败，请联系开发人员");
+//    }
 
 }

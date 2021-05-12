@@ -104,7 +104,7 @@ public class CutTaskController {
     @ApiImplicitParam(paramType = "path", name = "cutTaskId", value = "通知id", required = true, dataType = "String")
     public Result<?> doTask(@PathVariable("cutTaskId" ) String cutTaskId,@PathVariable("planCode") String planCode){
         try {
-            if (cutTaskService.doTask(cutTaskId, planCode)){
+            if (cutTaskService.doTask(planCode)){
                 return new Result<>().success();
             }
         }catch (BusinessException e){
