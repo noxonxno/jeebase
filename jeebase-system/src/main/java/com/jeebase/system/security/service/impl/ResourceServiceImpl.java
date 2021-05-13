@@ -28,7 +28,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
      * 异常日志记录对象
      */
     private static final Logger logger = LoggerFactory.getLogger(ResourceServiceImpl.class);
-    
+
     @Autowired
     private ResourceMapper resourceMapper;
 
@@ -82,7 +82,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
     public List<Resource> queryResourceByUserId(Integer userId) {
         List<Resource> resourceList = resourceMapper.queryResourceByUserId(userId);
         Map<Integer, Resource> resourceMap = new HashMap<>();
-        List<Resource> menus = this.assembleResourceTree(resourceList,resourceMap);
+        List<Resource> menus = this.assembleResourceTree(resourceList, resourceMap);
         return menus;
     }
 
@@ -98,22 +98,40 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
     }
 
     @Override
+    public List<Resource> queryResourceByUserId1() {
+        List<Resource> resourceList = resourceMapper.queryResourceByUserId1();
+        Map<Integer, Resource> resourceMap = new HashMap<>();
+        List<Resource> menus = this.assembleResourceTree(resourceList, resourceMap);
+        return menus;
+    }
+
+    @Override
+    public List<String> queryResourceListByUserId1() {
+        List<Resource> resourceList = resourceMapper.queryResourceByUserId1();
+        List<String> menus = new ArrayList<>();
+        for (Resource resource : resourceList) {
+            menus.add(resource.getResourceKey());
+        }
+        return menus;
+    }
+
+    @Override
     @Cacheable(value = "resources", key = "'parent_id_'.concat(#parentId)")
     public List<Resource> queryResourceByParentId(Integer parentId) {
         List<Resource> resourceList = resourceMapper.queryResourceTreeProc(parentId);
         Map<Integer, Resource> resourceMap = new HashMap<>();
-        List<Resource> menus = this.assembleResourceTree(resourceList,resourceMap);
+        List<Resource> menus = this.assembleResourceTree(resourceList, resourceMap);
         return menus;
     }
 
     /**
      * 组装子父级目录
+     *
      * @param resourceList
      * @param resourceMap
      * @return
      */
-    private List<Resource> assembleResourceTree(List<Resource> resourceList, Map<Integer, Resource> resourceMap)
-    {
+    private List<Resource> assembleResourceTree(List<Resource> resourceList, Map<Integer, Resource> resourceMap) {
         List<Resource> menus = new ArrayList<>();
         for (Resource resource : resourceList) {
             resourceMap.put(resource.getId(), resource);

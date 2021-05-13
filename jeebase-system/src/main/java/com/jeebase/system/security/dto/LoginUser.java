@@ -29,6 +29,19 @@ public class LoginUser {
     @NotBlank(message="验证码唯一标识不能为空")
     private String verkey;
 
+    /**
+     * 区分是移动端还是pc端
+     */
+    private String pcOrMobile;
+
+    public String getPcOrMobile() {
+        return pcOrMobile;
+    }
+
+    public void setPcOrMobile(String pcOrMobile) {
+        this.pcOrMobile = pcOrMobile;
+    }
+
     public String getUserAccount() {
         return userAccount;
     }
