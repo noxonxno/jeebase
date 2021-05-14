@@ -1,5 +1,6 @@
 package com.jeebase.system.controlSys.baseInfo.plcInfo.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
@@ -36,9 +37,5 @@ public class PlcinfoEntitly implements Serializable {
      */
     private String plcNote;
 
-    /**
-     * 当前值
-     */
-    private String plcValue;
 
 }

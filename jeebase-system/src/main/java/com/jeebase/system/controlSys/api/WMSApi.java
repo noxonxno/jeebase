@@ -3,10 +3,9 @@ package com.jeebase.system.controlSys.api;
 import com.jeebase.common.base.BusinessException;
 import com.jeebase.system.controlSys.api.entity.*;
 import com.jeebase.system.controlSys.api.service.WMSService;
+import com.jeebase.system.controlSys.planManage.entity.MesDoPlanEntity;
 import com.jeebase.system.controlSys.taskManage.entity.WmsTaskEntity;
 import com.jeebase.system.controlSys.taskManage.service.IWmsTaskService;
-import com.jeebase.system.controlSys.taskManage.service.impl.WmsTaskServiceImpl;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.jeebase.system.utils.HttpUtils;
@@ -121,22 +120,22 @@ public class WMSApi {
         }
     }
 
-    public String doWmsPlan(List<String> request_data) {
+    public void doWmsPlan(MesDoPlanEntity mesDoPlanEntity) {
         String url = "";
-        String s = "";
+
         Map<String, String> params = new HashMap<>();
+
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        for (String data : request_data) {
+
             params.put("request_uuid", UUID.randomUUID().toString());
             params.put("request_time", formatter.format(date));
             params.put("func_code", "SyncWmsInterfTask");
             params.put("line_code", "LineWms01");
             params.put("device_code", "CellD01");
-            params.put("request_data", data);
-            s = HttpUtils.doPost(url, params);
-        }
-        return s;
+            params.put("request_data", "data");
+            HttpUtils.doPost(url, params);
+
     }
 
     public void cancelWmsPlan(String task_id) {

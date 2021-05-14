@@ -1,16 +1,11 @@
 package com.jeebase.system.controlSys.api;
 
-import com.alibaba.fastjson.JSON;
 import com.jeebase.system.controlSys.api.entity.*;
-import com.jeebase.system.controlSys.api.service.CutAnalysisService;
 import com.jeebase.system.controlSys.taskManage.entity.CutTaskEntity;
 import com.jeebase.system.controlSys.taskManage.service.ICutTaskService;
-import com.jeebase.system.utils.HttpUtils;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -19,8 +14,6 @@ import java.util.*;
 public class CutAnalysisApi {
     @Autowired
     private ICutTaskService cutTaskService;
-    @Autowired
-    private CutAnalysisService cutAnalysisService;
 
     /**
      * 保存接收计划解析校验结果
@@ -110,27 +103,26 @@ public class CutAnalysisApi {
     public void analyzeVerifyCuttPlan(String request_data){
         String url = "";
         Map<String,String> params = new HashMap<>();
-        List<CutTask> catPlanLists = cutAnalysisService.selcetCatfileList();
+
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        for (CutTask catPlanList : catPlanLists) {
-            params.put("request_uuid",UUID.randomUUID().toString());
-            params.put("request_data", JSON.toJSONString(catPlanList));
-            params.put("request_time",formatter.format(date));
-            String result = HttpUtils.doPost(url, params);
-        }
+//        for (CutTask catPlanList : catPlanLists) {
+//            params.put("request_uuid",UUID.randomUUID().toString());
+//            params.put("request_data", JSON.toJSONString(catPlanList));
+//            params.put("request_time",formatter.format(date));
+//            String result = HttpUtils.doPost(url, params);
+//        }
     }
     public void doCutPlan(String request_data){
         String url = "";
         Map<String,String> params = new HashMap<>();
-        List<CutTask> catPlanList = cutAnalysisService.selcetCatfileList();
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        for (CutTask catPlan : catPlanList) {
-            params.put("request_uuid",UUID.randomUUID().toString());
-            params.put("request_data", JSON.toJSONString(catPlan));
-            params.put("request_time",formatter.format(date));
-            String result = HttpUtils.doPost(url, params);
-        }
+//        for (CutTask catPlan : catPlanList) {
+//            params.put("request_uuid",UUID.randomUUID().toString());
+//            params.put("request_data", JSON.toJSONString(catPlan));
+//            params.put("request_time",formatter.format(date));
+//            String result = HttpUtils.doPost(url, params);
+//        }
     }
 }

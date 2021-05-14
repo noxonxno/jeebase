@@ -18,7 +18,6 @@ import com.jeebase.system.security.service.IDataPermissionService;
 import com.jeebase.system.security.service.IOrganizationUserService;
 import com.jeebase.system.security.service.IUserRoleService;
 import com.jeebase.system.security.service.IUserService;
-import com.jeebase.system.utils.PasswordUtils;
 import net.oschina.j2cache.CacheChannel;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,7 +111,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             // 初次登录需要修改密码
             // userEntity.setUserStatus( "2" );
         }
-        String cryptPwd = PasswordUtils.getPassword(pwd);
+        String cryptPwd = BCrypt.hashpw(userEntity.getUserAccount() + pwd, BCrypt.gensalt());
         userEntity.setUserPassword(cryptPwd);
         boolean result = this.save(userEntity);
         if (result) {
@@ -175,7 +174,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String pwd = userEntity.getUserPassword();
         User oldInfo = this.getById(userEntity.getId());
         if (!StringUtils.isEmpty(pwd)) {
-            String cryptPwd = PasswordUtils.getPassword(pwd);
+            String cryptPwd = BCrypt.hashpw(oldInfo.getUserAccount() + pwd, BCrypt.gensalt());
             userEntity.setUserPassword(cryptPwd);
         }
         QueryWrapper<User> wrapper = new QueryWrapper<>();
