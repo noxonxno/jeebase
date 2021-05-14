@@ -22,7 +22,7 @@ public class TableRollerApi {
         HashMap<String, String> map = new HashMap<>();
         final String itemId = "通道 1.设备 1.标记 2";
         try {
-             opcClientService.UpdatePoints();
+             opcClientService.updatePoints();
              opcClientService.asyncReadObject(itemId);
         } catch (Exception e) {
             e.printStackTrace();
