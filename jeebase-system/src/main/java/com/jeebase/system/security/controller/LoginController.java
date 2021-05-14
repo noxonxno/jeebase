@@ -18,6 +18,7 @@ import com.jeebase.system.security.entity.User;
 import com.jeebase.system.security.service.IResourceService;
 import com.jeebase.system.security.service.IUserRoleService;
 import com.jeebase.system.security.service.IUserService;
+import com.jeebase.system.utils.PasswordUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -97,6 +98,10 @@ public class LoginController {
     public Result<String> login(@RequestBody LoginUser loginUser, HttpServletRequest request) throws Exception {
         String userAccount = loginUser.getUserAccount();
         String userPassword = loginUser.getUserPassword();
+
+        //pc或者移动端值存储到redis
+        cacheChannel.set("pcOrMobile", "pcOrMobile",loginUser.getPcOrMobile());
+
         String vcode = loginUser.getVcode();
         String verkey = loginUser.getVerkey();
 //        if (!CaptchaUtil.isVerified(verkey, vcode, request)) {
@@ -109,7 +114,9 @@ public class LoginController {
         QueryWrapper<User> ew = new QueryWrapper<>();
         ew.eq("user_account", userAccount).or().eq("user_mobile", userAccount).or().eq("user_email", userAccount);
         User user = userService.getOne(ew);
-        if (StringUtils.isEmpty(user) || !BCrypt.checkpw( userPassword, user.getUserPassword())) {
+
+        String cryptPwd = PasswordUtils.getPassword(userPassword);
+        if (StringUtils.isEmpty(user) || !cryptPwd.equals(user.getUserPassword())) {
             return new Result<String>().error(ResponseConstant.INVALID_USERNAME_PASSWORD);
         }
         String token = jwtComponent.sign(user.getUserAccount(), user.getUserPassword(), Constant.ExpTimeType.WEB);
@@ -123,9 +130,15 @@ public class LoginController {
     @RequiresAuthentication
     @ApiOperation(value = "登录后获取用户个人信息")
     public Result<UserInfo> userInfo(HttpServletRequest request, @ApiIgnore @CurrentUser User currentUser) {
+        //取出redis值 用于区分是pc还是mobile端  1代表移动端 2代表pc端
+        CacheObject pcOrMobile = cacheChannel.get("pcOrMobile","pcOrMobile");
+
         Integer userId = currentUser.getId();
         UserInfo userInfo = new UserInfo();
+
         BeanCopier.create(User.class, UserInfo.class, false).copy(currentUser, userInfo, null);
+        List<Resource> resourceList = new ArrayList<>();
+        List<String> resourceStringList = new ArrayList<>();
         List<Role> userRole = userRoleService.queryRolesByUserId(userId);
         if (!CollectionUtils.isEmpty(userRole)) {
             List<String> roles = new ArrayList<String>();
@@ -137,11 +150,18 @@ public class LoginController {
             userInfo.setRoles(roles);
             userInfo.setRoleName(roleNames.toString());
         }
-        List<Resource> resourceList = resourceService.queryResourceByUserId(userId);
+        //获取用户角色
+        if(pcOrMobile.getValue().equals("1")){
+            resourceList = resourceService.queryResourceByUserId1();
+            resourceStringList = resourceService.queryResourceListByUserId1();
+        }else{
+            // <!-- 根据用户名查询用户权限 -->
+            resourceList = resourceService.queryResourceByUserId(userId);
+            resourceStringList = resourceService.queryResourceListByUserId(userId);
+        }
         userInfo.setResources(resourceList);
-
-        List<String> resourceStringList = resourceService.queryResourceListByUserId(userId);
         userInfo.setStringResources(resourceStringList);
+        userInfo.setPcOrMobile(pcOrMobile.getValue().toString());
         return new Result<UserInfo>().success().put(userInfo);
     }
     

@@ -40,6 +40,16 @@ public class UserInfo
     private String street;
     private String description;
     private Date createTime;
+
+    public String getPcOrMobile() {
+        return pcOrMobile;
+    }
+
+    public void setPcOrMobile(String pcOrMobile) {
+        this.pcOrMobile = pcOrMobile;
+    }
+
+    private String pcOrMobile;
     
     public Integer getId()
     {

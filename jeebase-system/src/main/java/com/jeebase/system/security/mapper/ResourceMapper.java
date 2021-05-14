@@ -31,4 +31,10 @@ public interface ResourceMapper extends BaseMapper<Resource> {
      * @return List<Resource>
      */
     List<Resource> queryResourceTreeProc(Integer parentId);
+
+    /**
+     * 查询用户权限资源
+     * @return
+     */
+    List<Resource> queryResourceByUserId1();
 }

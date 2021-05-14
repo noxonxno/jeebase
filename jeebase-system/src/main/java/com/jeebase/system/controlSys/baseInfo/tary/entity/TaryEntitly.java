@@ -79,4 +79,9 @@ public class TaryEntitly implements Serializable {
      */
     @NotNull(message="阈值不能为空")
     private Integer taryFixNum;
+
+    /**
+     * 托盘累计使用次数
+     */
+    private Integer taryMaxNum;
 }
