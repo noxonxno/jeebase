@@ -16,6 +16,7 @@ import com.jeebase.system.controlSys.taskManage.entity.FjTaskEntity;
 import com.jeebase.system.controlSys.taskManage.entity.WmsTaskEntity;
 import com.jeebase.system.controlSys.taskManage.mapper.IWmsTaskMapper;
 import com.jeebase.system.controlSys.taskManage.service.IFjTaskService;
+import com.jeebase.system.controlSys.taskManage.service.IRollerTaskService;
 import com.jeebase.system.controlSys.taskManage.service.IWmsTaskService;
 import com.jeebase.system.utils.UUIDUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class WmsTaskServiceImpl extends ServiceImpl<IWmsTaskMapper, WmsTaskEntit
     private IWmsActionMapper wmsActionMapper;
 
     @Autowired
-    private WMSApi wmsApi;
+    private IRollerTaskService rollerTaskService;
 
     @Override
     public Page<WmsTaskEntity> selectList(Page<WmsTaskEntity> page, WmsTaskEntity wmsTaskEntity) {
@@ -141,12 +142,16 @@ public class WmsTaskServiceImpl extends ServiceImpl<IWmsTaskMapper, WmsTaskEntit
         }else {
             wmsActionEntity.setResult("成功");
             mesDoPlanEntity.setTaskType(doPlanEntity.getTaskType()+1);//任务环节加一
+            if (taskEntity.getTaskType() == 0){//若成功且任务为上料任务则，写入g_plan
+                rollerTaskService.write("g_plan",planCode);
+            }
             if ("auto".equals(doPlanEntity.getExeModel())){
                 mesDoPlanEntity.setPlanState("5");
             }else {
                 mesDoPlanEntity.setPlanState("3");
             }
         }
+
 
 
         //执行mes可执行计划更新

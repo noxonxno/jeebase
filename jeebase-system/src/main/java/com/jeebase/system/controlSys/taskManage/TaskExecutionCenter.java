@@ -3,6 +3,7 @@ package com.jeebase.system.controlSys.taskManage;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jeebase.common.base.BusinessException;
 import com.jeebase.system.controlSys.planManage.entity.MesDoPlanEntity;
 import com.jeebase.system.controlSys.planManage.service.IMesDoPlanService;
 import com.jeebase.system.controlSys.taskManage.service.ICutTaskService;
@@ -77,9 +78,8 @@ public class TaskExecutionCenter {
     private void execution() throws InterruptedException {
         //流程启动器
         while (run){
-            //查询辊道托盘是否就绪
-
-            if (true){//若就绪则查询是否有需要开始的计划，并查出排序字段最高的计划
+            //查询上料托盘是否就绪
+                if (rollerTaskService.initFinish()){//若就绪则查询是否有需要开始的计划，并查出排序字段最高的计划
                 LambdaQueryWrapper<MesDoPlanEntity> mesDoPlanEntityLambdaQueryWrapper = new QueryWrapper<MesDoPlanEntity>().lambda()
                         .eq(MesDoPlanEntity::getPlanState, 5)
                         .eq(MesDoPlanEntity::getTaskType, 0)
@@ -87,10 +87,9 @@ public class TaskExecutionCenter {
 
                 MesDoPlanEntity doPlanEntity = mesDoPlanService.getOne(mesDoPlanEntityLambdaQueryWrapper);
                 if (doPlanEntity != null){//若有则开始执行计划
-                    //写入rfid
-
                     //下发上料任务
                     wmsTaskService.doTask(doPlanEntity.getPlanCode(),1);
+
                 }
             }
 
@@ -124,11 +123,19 @@ public class TaskExecutionCenter {
      */
     private void toNext(MesDoPlanEntity doPlanEntity){
 
+        //判断当前任务环节与所在plc点位是否符合
+
         //根据任务环节执行下一步对应操作
         switch (doPlanEntity.getTaskType()){
             case    3   : //下料任务执行完成
-                //下发喷码任务
-                fjTaskService.doTask(doPlanEntity.getId(),1);
+                //验证rfid是否写入成功
+                if ("1".equals(rollerTaskService.read("g_rfid_status"))){
+                    //若成功则下发喷码任务
+                    fjTaskService.doTask(doPlanEntity.getId(),1);
+                }else {
+                    //若rfid写入失败则更新计划状态
+
+                }
                 break;
             case    6   : //喷码完成
                 //根据切割类型查询对应切割缓存切割缓存位是否有空闲，并下发输送任务
@@ -140,47 +147,35 @@ public class TaskExecutionCenter {
                 break;
             case    8   : //切割缓存位输送到位
                 //根据切割查询当前计划对应切割机是否有空闲
-                if ("g1".equals(doPlanEntity.getPlace())){//g1缓存位对应g2,g3
-
-
-                }else if ("g5".equals(doPlanEntity.getPlace())){//g5缓存位对应g6，g7
-
-
-                }else if ("g9".equals(doPlanEntity.getPlace())){//g9缓存位对应
-
-
-                }
+                rollerTaskService.fromBufferToCut(doPlanEntity.getPlace());
                 break;
             case    10  : //切割位输送到位
-                //确认切割机状态
                 //下法托盘举升指令
-
+                rollerTaskService.riseUp(doPlanEntity.getPlace());
                 break;
             case    12  : //托盘举升到位
                 //下发切割任务
                 cutTaskService.doTask(doPlanEntity.getPlanCode());
                 break;
             case    14  : //切割完成
-                //判断路径是否可下放
                 //下发托盘下放指令
+                rollerTaskService.riseDown(doPlanEntity.getPlace());
                 break;
             case    16  : //托盘下放到位
-                //判断对应缓存位是否空闲
-                //查询辊道当前是否空闲
-
+                //下发从切割位至切割缓存位指令
+                rollerTaskService.fromCutToBuffer(doPlanEntity.getPlace());
                 break;
             case    18  : //分拣缓存位输送到位
                 //查看分拣位是否空闲
-                    //查看辊道是否空闲
-                    //下发输送指令
-
+                rollerTaskService.goPlcPlace(doPlanEntity.getPlace(),"g13");
                 break;
             case    20  : //小件分拣位输送到位
                 //下发小件分拣任务
                     fjTaskService.doTask(doPlanEntity.getPlanCode(),2);
                 break;
             case    22  : //小件分拣任务完成
-
+                //输送至大件分拣位
+                rollerTaskService.goPlcPlace(doPlanEntity.getPlace(),"g14");
                 break;
             case    24  : //大件分拣位输送到位
                     //下发大件分拣任务
