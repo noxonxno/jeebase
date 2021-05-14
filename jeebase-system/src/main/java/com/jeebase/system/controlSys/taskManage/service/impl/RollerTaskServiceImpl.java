@@ -63,7 +63,6 @@ public class RollerTaskServiceImpl implements IRollerTaskService {
      */
     @Override
     public boolean goPlcPlace(String from,String to){
-
         if (getPlcState(to)){
             rollerApi.write(from+"_target",to);
             return true;

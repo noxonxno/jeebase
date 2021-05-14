@@ -112,7 +112,7 @@ public class WmsTaskController {
     public Result<?> doTask(@PathVariable("wmsTaskId") String wmsTaskId,@PathVariable("planCode") String planCode){
 
         try {
-            if (wmsTaskService.doTask(wmsTaskId, planCode)){
+            if (wmsTaskService.doTask(planCode,1)){
                 return new Result<>().success();
             }
         }catch (Exception e){

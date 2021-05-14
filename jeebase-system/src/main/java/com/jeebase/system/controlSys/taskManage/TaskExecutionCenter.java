@@ -16,22 +16,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
+
 public class TaskExecutionCenter {
 
-    @Autowired
+//    @Autowired
     private IMesDoPlanService mesDoPlanService;
 
-    @Autowired
+//    @Autowired
     private IWmsTaskService wmsTaskService;
 
-    @Autowired
+//    @Autowired
     private IFjTaskService  fjTaskService;
 
-    @Autowired
+//    @Autowired
     private ICutTaskService cutTaskService;
 
-    @Autowired
+//    @Autowired
     private IRollerTaskService rollerTaskService;
 
 
@@ -79,17 +79,17 @@ public class TaskExecutionCenter {
         //流程启动器
         while (run){
             //查询上料托盘是否就绪
-                if (rollerTaskService.initFinish()){//若就绪则查询是否有需要开始的计划，并查出排序字段最高的计划
+                if (rollerTaskService.initFinish()){
+                //若就绪则查询是否有需要开始的计划，并查出排序字段最高的计划
                 LambdaQueryWrapper<MesDoPlanEntity> mesDoPlanEntityLambdaQueryWrapper = new QueryWrapper<MesDoPlanEntity>().lambda()
                         .eq(MesDoPlanEntity::getPlanState, 5)
                         .eq(MesDoPlanEntity::getTaskType, 0)
                         .orderByDesc(MesDoPlanEntity::getSort);
-
                 MesDoPlanEntity doPlanEntity = mesDoPlanService.getOne(mesDoPlanEntityLambdaQueryWrapper);
+
                 if (doPlanEntity != null){//若有则开始执行计划
                     //下发上料任务
                     wmsTaskService.doTask(doPlanEntity.getPlanCode(),1);
-
                 }
             }
 
@@ -124,6 +124,7 @@ public class TaskExecutionCenter {
     private void toNext(MesDoPlanEntity doPlanEntity){
 
         //判断当前任务环节与所在plc点位是否符合
+
 
         //根据任务环节执行下一步对应操作
         switch (doPlanEntity.getTaskType()){

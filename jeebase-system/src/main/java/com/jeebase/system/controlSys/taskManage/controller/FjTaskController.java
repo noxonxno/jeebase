@@ -50,7 +50,6 @@ public class FjTaskController {
     @ApiOperation(value = "添加分拣任务")
     @AroundLog(name = "添加分拣任务")
     public Result<FjTaskEntity> create(@RequestBody FjTaskEntity fjTaskEntity) {
-
         boolean result = fjTaskService.save(fjTaskEntity);
         if (result) {
             return new Result<FjTaskEntity>().success("添加成功").put(fjTaskEntity);
@@ -68,7 +67,6 @@ public class FjTaskController {
     @ApiOperation(value = "更新分拣任务")
     @AroundLog(name = "更新分拣任务")
     public Result<FjTaskEntity> update(@RequestBody FjTaskEntity fjTaskEntity) {
-
         boolean result = fjTaskService.updateById(fjTaskEntity);
         if (result) {
             return new Result<FjTaskEntity>().success("修改成功").put(fjTaskEntity);
@@ -87,7 +85,6 @@ public class FjTaskController {
     @AroundLog(name = "删除分拣任务")
     @ApiImplicitParam(paramType = "path", name = "fjTaskId", value = "通知id", required = true, dataType = "String")
     public Result<?> delete(@PathVariable("fjTaskId") String fjTaskId) {
-
         boolean result = fjTaskService.removeById(fjTaskId);
         if (result) {
             return new Result<>().success("删除成功");
@@ -105,9 +102,8 @@ public class FjTaskController {
     @AroundLog(name = "执行分拣任务")
     @ApiImplicitParam(paramType = "path", name = "FjTaskId", value = "通知id", required = true, dataType = "String")
     public Result<?> doTask(@PathVariable("fjTaskId") String fjTaskId,@PathVariable("fjState") String fjState){
-
         try {
-            if (fjTaskService.doTask(fjState)){
+            if (fjTaskService.doTask(fjState,1)){
                 return new Result<>().success();
             }
         }catch (Exception e){
