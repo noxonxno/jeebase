@@ -106,6 +106,8 @@ restTemplate:
   readTimeout: 30000
 
 opcServer:
-  host: 192.168.0.108
-  user: OPCServer
-  password: 123456
+  host: 192.168.0.101
+  user: OPCuser
+  password: Dyrj888
+  domain:
+  clsid : 7BC0CC8E-482C-47CA-ABDC--0FE7F9C6E729

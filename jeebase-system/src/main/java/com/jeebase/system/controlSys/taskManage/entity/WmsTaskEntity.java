@@ -47,8 +47,8 @@ public class WmsTaskEntity implements Serializable {
 
     private String errInfo;
 
-    @TableField("task_type")
-    private int taskType;
+    @TableField("task_tpye")
+    private String taskTpye;
 
     private String exeModel;
 
@@ -140,12 +140,12 @@ public class WmsTaskEntity implements Serializable {
         this.endTime = endTime;
     }
 
-    public void setTaskType(int taskTpye) {
-        this.taskType = taskTpye;
+    public void setTaskTpye(String taskTpye) {
+        this.taskTpye = taskTpye;
     }
 
-    public int getTaskType() {
-        return taskType;
+    public String getTaskTpye() {
+        return taskTpye;
     }
 
 }

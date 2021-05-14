@@ -10,7 +10,6 @@ import com.jeebase.system.security.dto.*;
 import com.jeebase.system.security.entity.User;
 import com.jeebase.system.security.service.IDataPermissionService;
 import com.jeebase.system.security.service.IUserService;
-import com.jeebase.system.utils.PasswordUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -113,7 +112,7 @@ public class UserController {
         if (StringUtils.isEmpty(newPwd) || StringUtils.isEmpty(oldPwd)) {
             return new Result<>().error("密码不能为空");
         }
-        if (tempUser == null || !PasswordUtils.getPassword(oldPwd).equals(tempUser.getUserPassword())) {
+        if (tempUser == null || !BCrypt.checkpw(tempUser.getUserAccount() + oldPwd, tempUser.getUserPassword())) {
             return new Result<>().error("原密码错误");
         }
         UpdateUser user = new UpdateUser();

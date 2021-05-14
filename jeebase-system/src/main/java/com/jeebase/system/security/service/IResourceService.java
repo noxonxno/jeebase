@@ -14,7 +14,6 @@ public interface IResourceService extends IService<Resource> {
 
     /**
      * 查询用户资源角色
-     *
      * @param userId
      * @return
      */
@@ -24,20 +23,7 @@ public interface IResourceService extends IService<Resource> {
     List<String> queryResourceListByUserId(Integer userId);
 
     /**
-     *
-     * @return
-     */
-    List<Resource> queryResourceByUserId1();
-
-    /**
-     *
-     * @return
-     */
-    List<String> queryResourceListByUserId1();
-
-    /**
      * 查询资源权限列表
-     *
      * @param parentId
      * @return
      */
@@ -45,7 +31,6 @@ public interface IResourceService extends IService<Resource> {
 
     /**
      * 查询资源权限列表
-     *
      * @param wrapper
      * @return
      */
@@ -53,7 +38,6 @@ public interface IResourceService extends IService<Resource> {
 
     /**
      * 创建资源权限
-     *
      * @param resource
      * @return
      */
@@ -61,7 +45,6 @@ public interface IResourceService extends IService<Resource> {
 
     /**
      * 更新资源权限
-     *
      * @param resource
      * @return
      */
@@ -69,7 +52,6 @@ public interface IResourceService extends IService<Resource> {
 
     /**
      * 删除资源权限
-     *
      * @param resourceId
      * @return
      */

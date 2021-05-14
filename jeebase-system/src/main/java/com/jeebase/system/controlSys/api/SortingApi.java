@@ -2,9 +2,7 @@ package com.jeebase.system.controlSys.api;
 
 import com.alibaba.fastjson.JSON;
 import com.jeebase.system.controlSys.api.entity.*;
-import com.jeebase.system.controlSys.api.service.SortingService;
 import com.jeebase.system.utils.HttpUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,9 +13,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/base_url")
-public class FjApi {
-    @Autowired
-    private SortingService sortingService;
+public class SortingApi {
 
 
     /**
@@ -45,6 +41,7 @@ public class FjApi {
             return Response.makeErrRsp("接收计划解析校验结果异常", response_data);
         }
     }
+
 
 
     /**

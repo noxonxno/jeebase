@@ -42,8 +42,6 @@ public class FjTaskEntity implements Serializable {
     @TableField("ftask_state")
     private String ftaskState;
 
-    private int taskType;
-
     @TableField("start_time")
     private LocalDateTime startTime;
 
@@ -53,13 +51,14 @@ public class FjTaskEntity implements Serializable {
     @TableField("create_time")
     private LocalDateTime createTime;
 
+    private String exeModel;
 
-    public int getTaskType() {
-        return taskType;
+    public String getExeModel() {
+        return exeModel;
     }
 
-    public void setTaskType(int taskType) {
-        this.taskType = taskType;
+    public void setExeModel(String exeModel) {
+        this.exeModel = exeModel;
     }
 
     public LocalDateTime getCreateTime() {
