@@ -207,7 +207,6 @@ public class OpcClientService {
                 e.printStackTrace();
             }
         }
-        updatePoints();
     }
 
     public void writeObject(final String itemId, String writeValue) throws Exception {

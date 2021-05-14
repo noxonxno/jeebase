@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 
 @RestController
 @RequestMapping()
@@ -18,16 +17,14 @@ public class TableRollerApi {
 
        //辊道状态查询
     @RequestMapping("/Test")
-    public void readTableRollerStatus() {
-        HashMap<String, String> map = new HashMap<>();
-        final String itemId = "通道 1.设备 1.标记 2";
+    public String readTableRollerStatus(String itemId) {
         try {
-             opcClientService.updatePoints();
-             opcClientService.asyncReadObject(itemId);
+//             opcClientService.updatePoints();
+           return opcClientService.asyncReadObject(itemId);
         } catch (Exception e) {
             e.printStackTrace();
-            map.put("err", "读取出错");
 //            return map;
+            return null;
         }
     }
 
