@@ -21,10 +21,10 @@ public class TableRollerApi {
     private String password;
 
     //辊道状态查询
-    public Map<String, String> readTableRollerStatus(String domain, String clsid, String itemId) {
+    public Map<String, String> readTableRollerStatus(String domain, String clsId, String itemId) {
         HashMap<String, String> map = new HashMap<>();
         try {
-            return ReadOPCServerUtils.readOPCServer(host, domain, password, user, clsid, itemId);
+            return ReadOPCServerUtils.readOPCServer(host, domain, password, user, clsId, itemId);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("err", "读取出错");
@@ -32,11 +32,20 @@ public class TableRollerApi {
         }
     }
 
+    public String read(String plc){
+        return "";
+    }
+
+    public boolean write(String from,String to){
+        return true;
+    }
+
+
     //辊道位置状态查询
-    public Map<String, String> readTableRollerPlace(String domain, String clsid, String itemId) {
+    public Map<String, String> readTableRollerPlace(String domain, String clsId, String itemId) {
         HashMap<String, String> map = new HashMap<>();
         try {
-            return ReadOPCServerUtils.readOPCServer(host, domain, password, user, clsid, itemId);
+            return ReadOPCServerUtils.readOPCServer(host, domain, password, user, clsId, itemId);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("err", "读取出错");
@@ -45,10 +54,10 @@ public class TableRollerApi {
     }
 
     //写入辊道输送目标位置
-    public Map<String, String> writeTableRollerToPlace(String domain, String clsid, String itemId, String writeValue) {
+    public Map<String, String> writeTableRollerToPlace(String domain, String clsId, String itemId, String writeValue) {
         HashMap<String, String> map = new HashMap<>();
         try {
-            return WriteOPCServerUtils.writeOPCServer(host, domain, password, user, clsid, itemId, writeValue);
+            return WriteOPCServerUtils.writeOPCServer(host, domain, password, user, clsId, itemId, writeValue);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("err", "写入出错");
@@ -57,10 +66,10 @@ public class TableRollerApi {
     }
 
     //读取RFID
-    public Map<String, String> readRFID(String domain, String clsid, String itemId) {
+    public Map<String, String> readRFID(String domain, String clsId, String itemId) {
         HashMap<String, String> map = new HashMap<>();
         try {
-            return ReadOPCServerUtils.readOPCServer(host, domain, password, user, clsid, itemId);
+            return ReadOPCServerUtils.readOPCServer(host, domain, password, user, clsId, itemId);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("err", "读取出错");
@@ -69,10 +78,10 @@ public class TableRollerApi {
     }
 
     //写入RFID
-    public Map<String, String> writeRFID(String domain, String clsid, String itemId, String writeValue) {
+    public Map<String, String> writeRFID(String domain, String clsId, String itemId, String writeValue) {
         HashMap<String, String> map = new HashMap<>();
         try {
-            return WriteOPCServerUtils.writeOPCServer(host, domain, password, user, clsid, itemId, writeValue);
+            return WriteOPCServerUtils.writeOPCServer(host, domain, password, user, clsId, itemId, writeValue);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("err", "写入出错");
@@ -81,10 +90,10 @@ public class TableRollerApi {
     }
 
     //清空RFID
-    public Map<String, String> emptyRFID(String domain, String clsid, String itemId, String writeValue) {
+    public Map<String, String> emptyRFID(String domain, String clsId, String itemId, String writeValue) {
         HashMap<String, String> map = new HashMap<>();
         try {
-            return WriteOPCServerUtils.writeOPCServer(host, domain, password, user, clsid, itemId, writeValue);
+            return WriteOPCServerUtils.writeOPCServer(host, domain, password, user, clsId, itemId, writeValue);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("err", "写入出错");
@@ -93,10 +102,10 @@ public class TableRollerApi {
     }
 
     //顶升设备状态查询lift
-    public Map<String, String> readLiftEquipmentStatus(String domain, String clsid, String itemId) {
+    public Map<String, String> readLiftEquipmentStatus(String domain, String clsId, String itemId) {
         HashMap<String, String> map = new HashMap<>();
         try {
-            return ReadOPCServerUtils.readOPCServer(host, domain, password, user, clsid, itemId);
+            return ReadOPCServerUtils.readOPCServer(host, domain, password, user, clsId, itemId);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("err", "读取出错");
@@ -104,10 +113,10 @@ public class TableRollerApi {
         }
     }
 
-    public Map<String, String> writeTrayIsFinish(String domain, String clsid, String itemId, String writeValue) {
+    public Map<String, String> writeTrayIsFinish(String domain, String clsId, String itemId, String writeValue) {
         HashMap<String, String> map = new HashMap<>();
         try {
-            return WriteOPCServerUtils.writeOPCServer(host, domain, password, user, clsid, itemId, writeValue);
+            return WriteOPCServerUtils.writeOPCServer(host, domain, password, user, clsId, itemId, writeValue);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("err", "写入出错");

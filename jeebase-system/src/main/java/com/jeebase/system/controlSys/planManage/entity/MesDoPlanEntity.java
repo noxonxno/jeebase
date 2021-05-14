@@ -22,10 +22,12 @@ public class MesDoPlanEntity implements Serializable {
     @TableField("task_type")//任务环节
     private int taskType;
 
-    private String planState;//0取消，1成功，2失败，3未开始，4执行中
+    private String planState;//0取消，1成功，2失败，3未开始，4执行中,5等待执行中
 
     @TableField("place")
     private String place;
+
+    private int cutType;
 
     @TableField("exe_model")
     private String exeModel;
@@ -49,9 +51,25 @@ public class MesDoPlanEntity implements Serializable {
     private LocalDateTime updateTime;
 
     @TableField("tray_id")
-    private String tray_id;
+    private String trayId;
 
+    private int sort;
 
+    public int getCutType() {
+        return cutType;
+    }
+
+    public void setCutType(int cutType) {
+        this.cutType = cutType;
+    }
+
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
+    }
 
     public String getMesAdviceId() {
         return mesAdviceId;
@@ -81,8 +99,8 @@ public class MesDoPlanEntity implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public void setTray_id(String taryId) {
-        this.tray_id = taryId;
+    public void setTrayId(String taryId) {
+        this.trayId = taryId;
     }
 
     public void setMesAdviceId(String mesAdviceId) {
@@ -111,10 +129,6 @@ public class MesDoPlanEntity implements Serializable {
 
     public LocalDateTime getUpdateTime() {
         return updateTime;
-    }
-
-    public String getTrayId() {
-        return tray_id;
     }
 
     public void setPlanCode(String planCode) {
@@ -157,7 +171,7 @@ public class MesDoPlanEntity implements Serializable {
         this.exeModel = exeModel;
     }
 
-    public String getTray_id() {
-        return tray_id;
+    public String getTrayId() {
+        return trayId;
     }
 }

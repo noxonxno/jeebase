@@ -107,7 +107,7 @@ public class WMSApi {
             WmsTaskEntity wmsTaskEntity = new WmsTaskEntity();
             wmsTaskEntity.setId(wmsAtion_data.getTask_id());
             wmsTaskEntity.setPlanCode(wmsAtion_data.getPlan_code());
-            wmsTaskEntity.setTaskTpye(wmsAtion_data.getTask_tpye());
+//            wmsTaskEntity.setTaskType(wmsAtion_data.getTask_tpye());
             wmsTaskEntity.setFplanState(wmsAtion_data.getTask_status());
             wmsTaskEntity.setCreateTime(wmsAtion_data.getTask_sTime());
             wmsTaskEntity.setEndTime(wmsAtion_data.getTask_eTime());
@@ -121,13 +121,13 @@ public class WMSApi {
         }
     }
 
-    public String doWmsPlan(List<String> request_data) {
+    public String doWmsPlan(List<String> requestData) {
         String url = "";
         String s = "";
         Map<String, String> params = new HashMap<>();
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        for (String data : request_data) {
+        for (String data : requestData) {
             params.put("request_uuid", UUID.randomUUID().toString());
             params.put("request_time", formatter.format(date));
             params.put("func_code", "SyncWmsInterfTask");

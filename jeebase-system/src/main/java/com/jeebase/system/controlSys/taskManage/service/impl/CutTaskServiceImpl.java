@@ -38,10 +38,8 @@ public class CutTaskServiceImpl extends ServiceImpl<ICutTaskMapper, CutTaskEntit
     private ICutActionMapper cutActionMapper;
 
     @Autowired
-    private CutAnalysisApi cutAnalysisApi;
-
-    @Autowired
     private IMesDoPlanMapper mesDoPlanMapper;
+
 
     @Override
     public Page<CutTaskEntity> selectList(Page<CutTaskEntity> page, CutTaskEntity cutTaskEntity) {
@@ -50,31 +48,26 @@ public class CutTaskServiceImpl extends ServiceImpl<ICutTaskMapper, CutTaskEntit
         return  (Page<CutTaskEntity>)cutTaskEntityIPage;
     }
 
+
     @Override
     @Transactional
     public boolean doTask(String planCode) throws BusinessException {
-        //参数验证
-        if (StringUtils.isEmpty(planCode)){
-            throw new BusinessException("无主计划编号，请检查接口数据");
+
+        /** 参数，参数对应可执行任务，cut任务正确性验证************************************************************************/
+
+        MesDoPlanEntity doPlanEntity = this.mesDoPlanValidation(planCode, "5");
+        CutTaskEntity taskEntity = this.cutTaskValidation(planCode, "5", null);
+
+        /** 任务下发 ****************************************************************************************************/
+
+
+
+        //若请求发送失败则抛出异常
+        if (false){
+            throw new BusinessException("cut任务下发失败");
         }
 
-        //判断是否有mes可执行计划信息
-        LambdaQueryWrapper<MesDoPlanEntity> wrapperMesDoPlanEntity = new QueryWrapper<MesDoPlanEntity>().lambda();
-        wrapperMesDoPlanEntity.eq(MesDoPlanEntity::getId, planCode)
-                .eq(MesDoPlanEntity::getPlanState,"4");
-        MesDoPlanEntity doPlanEntity = mesDoPlanMapper.selectOne(wrapperMesDoPlanEntity);
-        if (doPlanEntity == null){
-            throw  new BusinessException("不存在所属mes可执行计划");
-        }
-        //判断是否有对应fj任务
-        LambdaQueryWrapper<CutTaskEntity> wrapperCutTaskEntity = new QueryWrapper<CutTaskEntity>().lambda();
-        wrapperCutTaskEntity.eq(CutTaskEntity::getPlanCode,planCode)
-                .eq(doPlanEntity.getTaskType() == 0,CutTaskEntity::getCtaskState,"3");
-        CutTaskEntity taskEntity = cutTaskMapper.selectOne(wrapperCutTaskEntity);
-        if (taskEntity == null){
-            throw  new BusinessException("不存在任务");
-        }
-
+        /** 更新可执行任务，cut任务状态为执行中，可执行计划任务环节+1，创建对应操作报工**********************************************/
         //创建初始报工记录
         CutActionEntity cutActionEntity = new CutActionEntity();
         cutActionEntity.setId(UUIDUtils.getUUID32());
@@ -82,77 +75,45 @@ public class CutTaskServiceImpl extends ServiceImpl<ICutTaskMapper, CutTaskEntit
         cutActionEntity.setActionName("");
         cutActionEntity.setSendLog("");
         cutActionEntity.setPlanCode(planCode);
+        if (cutActionMapper.insert(cutActionEntity) <=0 ){
+            throw new BusinessException("添加报工失败");
+        }
         //更改mes可执行任务状态
         MesDoPlanEntity mesDoPlanEntity = new MesDoPlanEntity();
         mesDoPlanEntity.setId(planCode);
+        mesDoPlanEntity.setPlanState("4");
         mesDoPlanEntity.setTaskType(doPlanEntity.getTaskType()+1);
         mesDoPlanEntity.setUpdateTime(LocalDateTime.now());
+        if (mesDoPlanMapper.updateById(mesDoPlanEntity) <= 0){//更新mes可执行计划,若失败抛出异常
+            throw new BusinessException("可执行计划更新失败,可执行任务编号："+planCode);
+        }
         //更改任务执行状态
         CutTaskEntity cutTaskEntity = new CutTaskEntity();
         cutTaskEntity.setCtaskState("4");
         cutTaskEntity.setId(taskEntity.getId());
-        //报工入库
-        if (cutActionMapper.insert(cutActionEntity) <=0 ){
-            throw new BusinessException("添加报工失败");
+        if(cutTaskMapper.updateById(cutTaskEntity) <= 0){
+            throw new BusinessException("cut任务更新失败：cut任务编号："+taskEntity.getId());
         }
-
-        //调用api执行任务
-
-        //切割任务报工对象创建
-        if (cutActionMapper.insert(cutActionEntity) <=0 ){
-            throw new BusinessException("添加报工失败");
-        }
-        //更改mes可执行任务状态
-        mesDoPlanMapper.updateById(mesDoPlanEntity);//更新mes可执行计划
-        //更改任务状态
-        cutTaskMapper.updateById(cutTaskEntity);
-
         return true;
     }
 
     @Override
     @Transactional
     public boolean doTaskCallBack(CutTaskEntity taskEntity){
+        /** 参数，参数对应可执行任务，fj任务正确性验证************************************************************/
 
-        //返回条件参数
         String planCode = taskEntity.getPlanCode();
-        if (StringUtils.isEmpty(planCode)){
-            throw new BusinessException("无主计划编号，请检查接口数据");
-        }
+        MesDoPlanEntity doPlanEntity = this.mesDoPlanValidation(planCode,"4");
+        CutActionEntity cutActionEntity = this.cutActionValidation(planCode);
+        this.cutTaskValidation(taskEntity,"4");
 
-        //判断是否有mes可执行计划信息
-        LambdaQueryWrapper<MesDoPlanEntity> wrapperMesDoPlanEntity = new QueryWrapper<MesDoPlanEntity>().lambda();
-        wrapperMesDoPlanEntity.eq(MesDoPlanEntity::getId, planCode)
-                .eq(MesDoPlanEntity::getPlanState,"4");
-        MesDoPlanEntity doPlanEntity = mesDoPlanMapper.selectOne(wrapperMesDoPlanEntity);
-        if (doPlanEntity == null){
-            throw  new BusinessException("不存在所属mes可执行计划");
-        }
-        //判断是否有对应报工数据
-        LambdaQueryWrapper<CutActionEntity> wrapperCutActionEntity = new QueryWrapper<CutActionEntity>().lambda()
-                .eq(CutActionEntity::getPlanCode,taskEntity.getPlanCode())
-                .orderByAsc(CutActionEntity::getSendTime);
-        List<CutActionEntity> cutActionEntities = cutActionMapper.selectList(wrapperCutActionEntity);
-        if (cutActionEntities.size() <= 0){
-            throw new BusinessException("不存在对应报工数据");
-        }
-        //判断是否有对应任务数据
-        LambdaQueryWrapper<CutTaskEntity> wrapperCutTaskEntity = new QueryWrapper<CutTaskEntity>().lambda()
-                .eq(CutTaskEntity::getPlanCode,taskEntity.getPlanCode())
-                .eq(CutTaskEntity::getCtaskState,"4");
-        CutTaskEntity cutTaskEntity = cutTaskMapper.selectOne(wrapperCutTaskEntity);
-        if (cutTaskEntity == null){
-            throw new BusinessException("不存在对应任务数据");
-        }
-
-
+        /** 更新主计划任务状态，任务环节，fj任务状态，报工结果完善***************************************************************/
         //创建主计划更新数据
         MesDoPlanEntity mesDoPlanEntity = new MesDoPlanEntity();
         mesDoPlanEntity.setId(planCode);
         mesDoPlanEntity.setUpdateTime(LocalDateTime.now());
 
         //创建报工更新数据
-        CutActionEntity cutActionEntity = cutActionEntities.get(0);
         cutActionEntity.setReportTime(LocalDateTime.now());
         cutActionEntity.setReportLog("");
                 //去除冗余更新字段减少更新消耗
@@ -160,9 +121,6 @@ public class CutTaskServiceImpl extends ServiceImpl<ICutTaskMapper, CutTaskEntit
         cutActionEntity.setActionName(null);
         cutActionEntity.setSendTime(null);
         cutActionEntity.setPlanCode(null);
-
-        //创建分拣任务更新数据
-        taskEntity.setId(cutTaskEntity.getId());
 
         //当前任务失败对应或成功更新数据
         if ("2".equals(taskEntity.getCtaskState())){
@@ -173,20 +131,72 @@ public class CutTaskServiceImpl extends ServiceImpl<ICutTaskMapper, CutTaskEntit
             taskEntity.setCtaskState("1");
             cutActionEntity.setResult("成功");
             mesDoPlanEntity.setTaskType(doPlanEntity.getTaskType()+1);//任务环节加一
+            if ("auto".equals(doPlanEntity.getExeModel())){
+                mesDoPlanEntity.setPlanState("5");
+            }else {
+                mesDoPlanEntity.setPlanState("3");
+            }
         }
-
-
 
         //更新
-        cutTaskMapper.updateById(taskEntity);
-        cutActionMapper.updateById(cutActionEntity);
-        mesDoPlanMapper.updateById(mesDoPlanEntity);
-
-        //判断是否自动任务，若为自动则调用下一步操作
-        if("auto".equals(cutTaskEntity.getExeModel()) && "2".equals(taskEntity.getCtaskState())){
-
+        if (mesDoPlanMapper.updateById(mesDoPlanEntity) <= 0){
+            throw new BusinessException("可执行计划更新失败,可执行任务编号："+planCode);
         }
+        if (cutTaskMapper.updateById(taskEntity) <= 0){
+            throw new BusinessException("cut任务更新失败,可执行任务编号："+planCode);
+        }
+        if ( cutActionMapper.updateById(cutActionEntity) <= 0){
+            throw new BusinessException("cut任务报工更新失败,可执行任务编号："+planCode);
+        }
+
         return true;
     }
 
+
+
+    /** 参数，参数对应可执行任务，fj任务,报工正确性验证*********************************************************************/
+
+    private MesDoPlanEntity mesDoPlanValidation(String planCode,String state){
+        //参数验证
+        if (StringUtils.isEmpty(planCode)){
+            throw new BusinessException("无主计划编号，请检查接口数据");
+        }
+        LambdaQueryWrapper<MesDoPlanEntity> wrapperMesDoPlanEntity = new QueryWrapper<MesDoPlanEntity>().lambda()
+                .eq(MesDoPlanEntity::getId, planCode)
+                .eq(MesDoPlanEntity::getPlanState,state);
+        MesDoPlanEntity doPlanEntity = mesDoPlanMapper.selectOne(wrapperMesDoPlanEntity);
+        if (doPlanEntity == null){
+            throw  new BusinessException("不存在所属mes可执行计划");
+        }
+        return doPlanEntity;
+    }
+
+    private CutTaskEntity cutTaskValidation(String planCode,String state,String id){
+        LambdaQueryWrapper<CutTaskEntity> wrapperFjTaskEntity = new QueryWrapper<CutTaskEntity>().lambda()
+                .eq(CutTaskEntity::getPlanCode,planCode)
+                .eq(id != null,CutTaskEntity::getId,id)
+                .eq(CutTaskEntity::getCtaskState,state);
+        //判断是否存在对应fj任务
+        CutTaskEntity taskEntity = cutTaskMapper.selectOne(wrapperFjTaskEntity);
+        if (taskEntity == null){
+            throw  new BusinessException("不存在喷码任务");
+        }
+        return taskEntity;
+    }
+
+    private void cutTaskValidation(CutTaskEntity cutTaskEntity,String state){
+        this.cutTaskValidation(cutTaskEntity.getPlanCode(),state,cutTaskEntity.getId());
+    }
+
+    private CutActionEntity cutActionValidation(String planCode){
+        //判断是否有对应报工数据
+        LambdaQueryWrapper<CutActionEntity> wrapperWmsActionEntity = new QueryWrapper<CutActionEntity>().lambda()
+                .eq(CutActionEntity::getPlanCode,planCode)
+                .orderByDesc(CutActionEntity::getSendTime);
+        CutActionEntity cutActionEntity = cutActionMapper.selectOne(wrapperWmsActionEntity);
+        if (cutActionEntity == null){
+            throw new BusinessException("不存在对应报工数据");
+        }
+        return cutActionEntity;
+    }
 }

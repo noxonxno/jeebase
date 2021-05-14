@@ -51,34 +51,23 @@ public class FjTaskServiceImpl extends ServiceImpl<IFjTaskMapper, FjTaskEntity> 
 
     @Override
     @Transactional
-    public boolean doTask(String planCode) throws BusinessException {
+    public boolean doTask(String planCode,int taskType) throws BusinessException {
 
-        //参数验证
-        if (StringUtils.isEmpty(planCode)){
-            throw new BusinessException("无主计划编号，请检查接口数据");
+        /** 参数，参数对应可执行任务，fj任务正确性验证*************************************************************************/
+
+        MesDoPlanEntity doPlanEntity = this.mesDoPlanValidation(planCode,"5");
+        FjTaskEntity taskEntity = this.fjTaskValidation(planCode,taskType,"5",null);
+
+        /** 任务下发 ****************************************************************************************************/
+
+        //fjApi.doFJPlan("");
+
+        //若请求发送失败则抛出异常
+        if (false){
+            throw new BusinessException("任务下发请求发送失败");
         }
 
-        //判断是否有mes可执行计划信息
-        LambdaQueryWrapper<MesDoPlanEntity> wrapperMesDoPlanEntity = new QueryWrapper<MesDoPlanEntity>().lambda();
-        wrapperMesDoPlanEntity.eq(MesDoPlanEntity::getId, planCode)
-                .eq(MesDoPlanEntity::getPlanState,"4");
-        MesDoPlanEntity doPlanEntity = mesDoPlanMapper.selectOne(wrapperMesDoPlanEntity);
-        if (doPlanEntity == null){
-            throw  new BusinessException("不存在所属mes可执行计划");
-        }
-        //判断是否有对应fj任务
-        LambdaQueryWrapper<FjTaskEntity> wrapperFjTaskEntity = new QueryWrapper<FjTaskEntity>().lambda();
-        wrapperFjTaskEntity.eq(FjTaskEntity::getPlanCode,planCode)
-        .eq(FjTaskEntity::getFtaskState,"3")
-        .eq(doPlanEntity.getTaskType() == 3,FjTaskEntity::getTaskType,"pm")
-        .eq(doPlanEntity.getTaskType() == 7,FjTaskEntity::getTaskType,"xj")
-        .eq(doPlanEntity.getTaskType() == 9,FjTaskEntity::getTaskType,"dj");
-        //判断是否存在对应fj任务
-        FjTaskEntity taskEntity = fjTaskMapper.selectOne(wrapperFjTaskEntity);
-        if (taskEntity == null){
-            throw  new BusinessException("不存在喷码任务");
-        }
-
+        /** 更新可执行任务，fj任务状态为执行中，可执行计划任务环节+1，创建对应操作报工***********************************************/
         //创建初始报工记录
         FjActionEntity fjActionEntity = new FjActionEntity();
         fjActionEntity.setId(UUIDUtils.getUUID32());
@@ -88,6 +77,7 @@ public class FjTaskServiceImpl extends ServiceImpl<IFjTaskMapper, FjTaskEntity> 
         //更改mes可执行任务状态
         MesDoPlanEntity mesDoPlanEntity = new MesDoPlanEntity();
         mesDoPlanEntity.setId(planCode);
+        mesDoPlanEntity.setPlanState("4");
         mesDoPlanEntity.setTaskType(doPlanEntity.getTaskType()+1);
         mesDoPlanEntity.setUpdateTime(LocalDateTime.now());
         //更改任务执行状态
@@ -95,24 +85,19 @@ public class FjTaskServiceImpl extends ServiceImpl<IFjTaskMapper, FjTaskEntity> 
         fjTaskEntity.setFtaskState("4");
         fjTaskEntity.setId(taskEntity.getId());
 
-
         //判断当前执行任务 喷码，大件分拣，小件分拣
-        if (mesDoPlanEntity.getTaskType() == 3){//喷码
+        if (taskType == 1){//喷码
             fjActionEntity.setActionName("喷码");
 
-        }else if (mesDoPlanEntity.getTaskType() == 7){//小件分拣
+        }else if (taskType == 2){//小件分拣
             fjActionEntity.setActionName("小件分拣");
 
-        }else if (mesDoPlanEntity.getTaskType() == 9){//大件分拣
+        }else if (taskType == 3){//大件分拣
             fjActionEntity.setActionName("大件分拣");
 
         }else {//类型错误
             throw new BusinessException("任务环节错误");
         }
-
-        //调用api执行任务
-        //fjApi.doFJPlan("");
-
 
         //分拣任务报工对象创建
         if (fjActionMapper.insert(fjActionEntity) <=0 ){
@@ -128,51 +113,20 @@ public class FjTaskServiceImpl extends ServiceImpl<IFjTaskMapper, FjTaskEntity> 
     @Override
     @Transactional
     public boolean doTaskCallBack(FjTaskEntity taskEntity){
+        /** 参数，参数对应可执行任务，fj任务,报工正确性验证*********************************************************************/
 
-        //返回条件参数
         String planCode = taskEntity.getPlanCode();
-        if (StringUtils.isEmpty(planCode)){
-            throw new BusinessException("无主计划编号，请检查接口数据");
-        }
+        MesDoPlanEntity doPlanEntity = this.mesDoPlanValidation(planCode,"4");
+        FjActionEntity fjActionEntity = this.fjActionValidation(planCode);
+        this.fjTaskValidation(taskEntity,"4");
 
-        //判断是否有mes可执行计划信息
-        LambdaQueryWrapper<MesDoPlanEntity> wrapperMesDoPlanEntity = new QueryWrapper<MesDoPlanEntity>().lambda();
-        wrapperMesDoPlanEntity.eq(MesDoPlanEntity::getId, planCode)
-                .eq(MesDoPlanEntity::getPlanState,"4");
-        MesDoPlanEntity doPlanEntity = mesDoPlanMapper.selectOne(wrapperMesDoPlanEntity);
-        if (doPlanEntity == null){
-            throw  new BusinessException("不存在所属mes可执行计划");
-        }
-
-        //判断是否有对应报工数据
-        LambdaQueryWrapper<FjActionEntity> wrapperFjActionEntity = new QueryWrapper<FjActionEntity>().lambda()
-                .eq(FjActionEntity::getPlanCode,taskEntity.getPlanCode())
-                .orderByAsc(FjActionEntity::getSendTime);
-        List<FjActionEntity> fjActionEntities = fjActionMapper.selectList(wrapperFjActionEntity);
-        if (fjActionEntities.size() <= 0){
-            throw new BusinessException("不存在对应报工数据");
-        }
-
-        //判断是否有对应任务数据
-        LambdaQueryWrapper<FjTaskEntity> wrapperFjTaskEntity = new QueryWrapper<FjTaskEntity>().lambda()
-                .eq(FjTaskEntity::getPlanCode,taskEntity.getPlanCode())
-                .eq(FjTaskEntity::getFtaskState,"4")
-                .eq(doPlanEntity.getTaskType() == 3,FjTaskEntity::getTaskType,"pm")
-                .eq(doPlanEntity.getTaskType() == 7,FjTaskEntity::getTaskType,"xj")
-                .eq(doPlanEntity.getTaskType() == 9,FjTaskEntity::getTaskType,"dj");
-        FjTaskEntity fjTaskEntity = fjTaskMapper.selectOne(wrapperFjTaskEntity);
-        if (fjTaskEntity == null){
-            throw new BusinessException("不存在对应任务数据");
-        }
-
-
+        /** 更新主计划任务状态，任务环节，fj任务状态，报工结果完善***************************************************************/
         //创建主计划更新数据
         MesDoPlanEntity mesDoPlanEntity = new MesDoPlanEntity();
         mesDoPlanEntity.setId(planCode);
         mesDoPlanEntity.setUpdateTime(LocalDateTime.now());
 
         //创建报工更新数据
-        FjActionEntity fjActionEntity = fjActionEntities.get(0);
         fjActionEntity.setReportTime(LocalDateTime.now());
         fjActionEntity.setReportLog("");
                     //去除冗余更新字段减少更新消耗
@@ -180,10 +134,6 @@ public class FjTaskServiceImpl extends ServiceImpl<IFjTaskMapper, FjTaskEntity> 
         fjActionEntity.setActionName(null);
         fjActionEntity.setSendTime(null);
         fjActionEntity.setPlanCode(null);
-
-        //创建分拣任务更新数据
-        taskEntity.setId(fjTaskEntity.getId());
-
 
         //当前任务失败对应或成功更新数据
         if ("2".equals(taskEntity.getFtaskState())){
@@ -194,20 +144,75 @@ public class FjTaskServiceImpl extends ServiceImpl<IFjTaskMapper, FjTaskEntity> 
             taskEntity.setFtaskState("1");
             fjActionEntity.setResult("成功");
             mesDoPlanEntity.setTaskType(doPlanEntity.getTaskType()+1);//任务环节加一
+            if ("auto".equals(doPlanEntity.getExeModel())){
+                mesDoPlanEntity.setPlanState("5");
+            }else {
+                mesDoPlanEntity.setPlanState("3");
+            }
         }
 
         //若该次任务为大小件分拣则需对分拣执行结果与零件表进行关联操作
 
+
         //更新
-        fjTaskMapper.updateById(taskEntity);
-        fjActionMapper.updateById(fjActionEntity);
-        mesDoPlanMapper.updateById(mesDoPlanEntity);
-
-        //判断是否自动任务，若为自动则调用下一步操作
-        if("auto".equals(doPlanEntity.getExeModel())&& "2".equals(taskEntity.getFtaskState())){
-
+        if (mesDoPlanMapper.updateById(mesDoPlanEntity) <= 0){//更新mes可执行计划,若失败抛出异常
+            throw new BusinessException("可执行计划更新失败,可执行任务编号："+planCode);
         }
+        if (fjTaskMapper.updateById(taskEntity) <= 0){//更新fj任务,若失败抛出异常
+            throw new BusinessException("fj任务更新失败,可执行任务编号："+planCode);
+        }
+        if (fjActionMapper.updateById(fjActionEntity) <= 0){//更新mes可执行计划,若失败抛出异常
+            throw new BusinessException("fj任务报工更新失败,可执行任务编号："+planCode);
+        }
+
         return true;
     }
 
+
+    /** 参数，参数对应可执行任务，fj任务,报工正确性验证*********************************************************************/
+
+    private MesDoPlanEntity mesDoPlanValidation(String planCode,String state){
+        //参数验证
+        if (StringUtils.isEmpty(planCode)){
+            throw new BusinessException("无主计划编号，请检查接口数据");
+        }
+        LambdaQueryWrapper<MesDoPlanEntity> wrapperMesDoPlanEntity = new QueryWrapper<MesDoPlanEntity>().lambda()
+                .eq(MesDoPlanEntity::getId, planCode)
+                .eq(MesDoPlanEntity::getPlanState,state);
+        MesDoPlanEntity doPlanEntity = mesDoPlanMapper.selectOne(wrapperMesDoPlanEntity);
+        if (doPlanEntity == null){
+            throw  new BusinessException("不存在所属mes可执行计划");
+        }
+        return doPlanEntity;
+    }
+
+    private FjTaskEntity fjTaskValidation(String planCode,int taskType,String state,String id){
+        LambdaQueryWrapper<FjTaskEntity> wrapperFjTaskEntity = new QueryWrapper<FjTaskEntity>().lambda()
+                .eq(FjTaskEntity::getPlanCode,planCode)
+                .eq(FjTaskEntity::getFtaskState,state)
+                .eq(id != null,FjTaskEntity::getId,id)
+                .eq(FjTaskEntity::getTaskType,taskType);
+        //判断是否存在对应fj任务
+        FjTaskEntity taskEntity = fjTaskMapper.selectOne(wrapperFjTaskEntity);
+        if (taskEntity == null){
+            throw  new BusinessException("不存在喷码任务");
+        }
+        return taskEntity;
+    }
+
+    private void fjTaskValidation(FjTaskEntity fjTaskEntity,String state){
+        this.fjTaskValidation(fjTaskEntity.getPlanCode(),fjTaskEntity.getTaskType(),state,fjTaskEntity.getId());
+    }
+
+    private FjActionEntity fjActionValidation(String planCode){
+        //判断是否有对应报工数据
+        LambdaQueryWrapper<FjActionEntity> wrapperFjActionEntity = new QueryWrapper<FjActionEntity>().lambda()
+                .eq(FjActionEntity::getPlanCode,planCode)
+                .orderByDesc(FjActionEntity::getSendTime);
+        FjActionEntity fjActionEntity = fjActionMapper.selectOne(wrapperFjActionEntity);
+        if (fjActionEntity == null){
+            throw new BusinessException("不存在对应报工数据");
+        }
+        return fjActionEntity;
+    }
 }

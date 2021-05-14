@@ -25,27 +25,5 @@ public class RollerActionServiceImpl extends ServiceImpl<IRollerActionMapper, Ro
         IPage<RollerActionEntity> mesAdviceEntityIPage = rollerActionMapper.selectPage(page, lambda);
         return  (Page<RollerActionEntity>)mesAdviceEntityIPage;
     }
-    //确认
-
-    //执行
-
-    //报工
-
-    //plc
-
-
-
-    public void doTask(){
-        //执行辊道输送任务
-
-
-    }
-
-    public void doTaskCallBack(){
-        //执行辊道输送任务
-
-
-    }
-
 
 }
