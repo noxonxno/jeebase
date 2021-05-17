@@ -41,10 +41,22 @@ public class PartServiceImpl extends ServiceImpl<IPartMapper, PartEntitly>
     }
 
     @Override
-    public boolean removePart(String locationId) {
-        PartEntitly partEntitly = partMapper.selectById(locationId);
+    public Page<PartEntitly> pcPartList(Page<PartEntitly> page, PartEntitly partEntitly) {
+        QueryWrapper<PartEntitly> wrapper = new QueryWrapper<PartEntitly>();
+        //查询条件
+        wrapper.like(partEntitly.getPartCode()!=null && !(("").equals(partEntitly.getPartCode())),"part_code",partEntitly.getPartCode());
+        wrapper.select().orderByDesc("create_time");
+        Page<PartEntitly> licationPage = new Page<>(page.getCurrent(), page.getSize());
 
-        return saveOrUpdate(partEntitly);
+        IPage<PartEntitly> locationList = partMapper.selectPage(licationPage, wrapper);
+
+        return (Page<PartEntitly>) locationList;
+    }
+    @Override
+    public boolean removePart(String partId) {
+        PartEntitly partEntitly = partMapper.selectById(partId);
+
+        return partMapper.deleteById(partId) >=1 ? true:false;
     }
 
     @Override
@@ -54,11 +66,19 @@ public class PartServiceImpl extends ServiceImpl<IPartMapper, PartEntitly>
         return save(partEntitly);
     }
 
+
+    @Override
+    public boolean pcAddPart(PartEntitly partEntitly) {
+        partEntitly.setPartId(UUIDUtils.getUUID32());
+        partEntitly.setFjType(0);
+        partEntitly.setPartState("0");
+        return save(partEntitly);
+    }
     @Override
     public boolean updatePart(PartEntitly partEntitly) {
         PartEntitly part = partMapper.selectById(partEntitly.getPartId());
 
 
-        return saveOrUpdate(part);
+        return saveOrUpdate(partEntitly);
     }
 }

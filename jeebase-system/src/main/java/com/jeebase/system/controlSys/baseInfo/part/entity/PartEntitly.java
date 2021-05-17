@@ -48,7 +48,7 @@ public class PartEntitly implements Serializable {
     private LocalDateTime createTime;
 
     /**
-     * 零件类型
+     * 零件类型 0:小件 1：中件 2 大件
      */
     private String partType;
 

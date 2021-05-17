@@ -83,6 +83,15 @@ public class Resource implements Serializable {
     @TableLogic
     private String delFlag;
 
+    public Integer getPcOrMobile() {
+        return pcOrMobile;
+    }
+
+    public void setPcOrMobile(Integer pcOrMobile) {
+        this.pcOrMobile = pcOrMobile;
+    }
+
+    private Integer pcOrMobile;
     /**
      * 子菜单，必须初始化否则vue新增不展示树子菜单
      */

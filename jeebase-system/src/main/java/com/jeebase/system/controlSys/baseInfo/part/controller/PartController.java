@@ -6,6 +6,8 @@ import com.jeebase.common.base.Result;
 import com.jeebase.system.controlSys.baseInfo.part.entity.PartEntitly;
 import com.jeebase.system.controlSys.baseInfo.part.service.IPartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +24,7 @@ public class PartController {
     private IPartService iPartService;
 
     /**
-     *  分页查询
+     *  mobile分页查询
      * @param page
      * @param partEntitly
      * @return
@@ -35,7 +37,20 @@ public class PartController {
     }
 
     /**
-     * 新增
+     *  mobile分页查询
+     * @param page
+     * @param partEntitly
+     * @return
+     */
+    @RequestMapping("pcPartList")
+    public PageResult<PartEntitly> pcPartList(Page<PartEntitly> page, PartEntitly partEntitly){
+        Page<PartEntitly> partEntitlyPage = iPartService.pcPartList(page, partEntitly);
+        PageResult<PartEntitly> pageResult = new PageResult<>(partEntitlyPage.getTotal(), partEntitlyPage.getRecords());
+        return pageResult;
+    }
+
+    /**
+     * mb新增
      * @param partEntitly
      * @return
      */
@@ -50,12 +65,27 @@ public class PartController {
     }
 
     /**
+     * mb新增
+     * @param partEntitly
+     * @return
+     */
+    @RequestMapping("pcAddPart")
+    public Result<?> pcAddPart(@RequestBody @Valid PartEntitly partEntitly){
+        boolean result = iPartService.pcAddPart(partEntitly);
+        if (result) {
+            return new Result<>().success("新增成功");
+        } else {
+            return new Result<>().error("新增失败");
+        }
+    }
+
+    /**
      * 修改
      * @param partEntitly
      * @return
      */
     @RequestMapping("updatePart")
-    public Result<?>  updatePart(PartEntitly partEntitly){
+    public Result<?>  updatePart(@RequestBody @Valid PartEntitly partEntitly){
         boolean result = iPartService.updatePart(partEntitly);
         if (result) {
             return new Result<>().success("修改成功");
@@ -71,8 +101,8 @@ public class PartController {
      * @param partId
      * @return
      */
-    @RequestMapping("removePart")
-    public Result<?>  removePart(String partId){
+    @RequestMapping("removePart/{partId}")
+    public Result<?>  removePart(@PathVariable("partId")  String partId){
         boolean result = iPartService.removePart(partId);
         if (result) {
             return new Result<>().success("删除成功");

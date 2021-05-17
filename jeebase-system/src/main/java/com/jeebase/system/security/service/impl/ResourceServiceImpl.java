@@ -42,7 +42,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
         if (count > 0) {
             throw new BusinessException("资源标识已存在");
         }
-
+        resource.setPcOrMobile(0);
         boolean result = this.save(resource);
         return result;
     }

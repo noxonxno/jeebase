@@ -17,12 +17,20 @@ public interface IPartService extends IService<PartEntitly> {
     PartEntitly getPartById(PartEntitly partEntitly);
 
     /**
-     *  分页查询
+     *  mb分页查询
      * @param page
      * @param partEntitly
      * @return
      */
     Page<PartEntitly> partList(Page<PartEntitly> page, PartEntitly partEntitly);
+
+    /**
+     *  pc分页查询
+     * @param page
+     * @param partEntitly
+     * @return
+     */
+    Page<PartEntitly> pcPartList(Page<PartEntitly> page, PartEntitly partEntitly);
 
     /**
      * 删除
@@ -32,11 +40,18 @@ public interface IPartService extends IService<PartEntitly> {
     boolean removePart(String partId);
 
     /**
-     * 新增
+     * mb新增
      * @param partEntitly
      * @return
      */
     boolean addPart(PartEntitly partEntitly);
+
+    /**
+     * pc新增
+     * @param partEntitly
+     * @return
+     */
+    boolean pcAddPart(PartEntitly partEntitly);
 
     /**
      * 修改
